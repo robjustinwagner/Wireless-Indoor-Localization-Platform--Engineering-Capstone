@@ -26,7 +26,7 @@ unsigned char data;
 int reading = 0; // boolean for state of eeprom (whether it is reading0
 unsigned char CS; // chip select
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
 	WDTCTL = WDTPW + WDTHOLD;                 // Stop watchdog timer
@@ -117,36 +117,6 @@ void spi_eeprom_select() {
 void spi_eeprom_release() {
 	P2OUT |= BIT6;
 	__delay_cycles(200);
-}
-
-void initEEPROM(){
-
-	int i;
-
-	if (CALBC1_1MHZ==0xFF)					// If calibration constant erased
-	{
-		while(1);                               // do not load, trap CPU!!
-	}
-	BCSCTL1 = CALBC1_1MHZ;                    // Set DCO
-	DCOCTL = CALDCO_1MHZ;
-	for(i=2100;i>0;i--);                      // Wait for DCO to stabilize.
-
-
-	// Select SPI
-	P2DIR |= BIT6; // SS_1_SEL - output (EEPROM)
-	P3DIR |= BIT0; // SS_2_SEL - output
-	P2OUT |= BIT6;
-	P3OUT |= BIT0; // SS_2_SEL = high
-
-	P3SEL |= 0x0E;                            // P3.3,2,1 option select
-	UCB0CTL0 |= UCCKPL + UCMSB + UCMST + UCSYNC;  // 3-pin, 8-bit SPI master
-	UCB0CTL1 |= UCSSEL_2;                     // SMCLK
-	UCB0BR0 |= 0x02;                          // /2
-	UCB0BR1 = 0;                              //
-	IE2 &= (~UCB0TXIE | UCB0TXIE); // disable TX int
-	UCB0CTL1 &= ~UCSWRST;                     // **Initialize USCI state machine**
-	//IE2 |= UCB0RXIE;                          // Enable USCI0 RX interrupt
-
 }
 
 unsigned char spi_eeprom_exchg(unsigned char dataOut)

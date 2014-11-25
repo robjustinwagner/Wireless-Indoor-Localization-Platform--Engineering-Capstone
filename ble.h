@@ -12,10 +12,10 @@
 #ifndef BLE_H_
 #define BLE_H_
 
-void initBLE(); //initialize ble
-
 //ble functions
 void turnOnBLE();
 void turnOffBLE();
+
+void DEBUG_BLE_Echo_To_Terminal();
 
 #endif /* BLE_H_ */

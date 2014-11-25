@@ -6,15 +6,13 @@
  * Pedro Melgarejo
  * Robert Wagner
  *
- * I2C.H
+ * MAIN.H
  */
 
-#ifndef I2C_H_
-#define I2C_H_
+#ifndef MAIN_H_
+#define MAIN_H_
 
-void I2C_Init(); //initialize i2c
+//general tasks
+CLK_Init();
 
-//i2c functions
-
-
-#endif /* I2C_H_ */
+#endif /* MAIN_H_ */

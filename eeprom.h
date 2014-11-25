@@ -12,8 +12,6 @@
 #ifndef EEPROM_H_
 #define EEPROM_H_
 
-void initEEPROM(); //initialize eeprom
-
 //eeprom functions
 void eepromRead(uint16_t addr);
 void eepromWrite(uint16_t addr, unsigned char value);

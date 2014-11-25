@@ -12,7 +12,7 @@
 #ifndef SPI_H_
 #define SPI_H_
 
-void initSPI(); //initialize spi
+void SPI_Init(); //initialize spi
 
 //spi functions
 
