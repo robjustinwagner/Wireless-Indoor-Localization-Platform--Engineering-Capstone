@@ -10,9 +10,9 @@
  */
 
 /* INCLUDES */
-#include <msp430f2619.h>
+#include "gen_lib.h"
 #include "uart.h"
-#include "ble.c"
+#include "ble.h"
 
 /* DEFINITIONS */
 
@@ -58,11 +58,6 @@ void UART_Init()
 	P1OUT = 0x00;
 	P1DIR |= BIT0 | BIT5 | BIT6;					// Set P1.0 to output direction for BLE
 
-	turnOnBLE();
-
-	int i;
-	for(i=10;i>0;i--); 								//wait for cmd msg to transmit from ble
-
 	__bis_SR_register(GIE);       					// set 'general interrupt enable' bit
 	__enable_interrupt();
 }
@@ -73,7 +68,7 @@ void DEBUG_UART_Print(unsigned char *label, unsigned char *dataToVerify, bool is
 	bool print = true;
 	while(print) { 						// Loop until null char is flagged
 		while(!(UC1IFG & UCA1TXIFG)); 	// Wait for TX buffer to be ready for new data
-		UCA1TXBUF = *label; 			//Write the character at the location specified py the pointer
+		UCA1TXBUF = *label; 			//Write the character at the location specified by the pointer
 		label++; 						//Increment the TxString pointer to point to the next character
 		if(*label == '\0')print = false;//Terminate loop
 	}
@@ -81,7 +76,7 @@ void DEBUG_UART_Print(unsigned char *label, unsigned char *dataToVerify, bool is
 	print = true;
 	while(print) { 											// Loop until null char is flagged
 		while(!(UC1IFG & UCA1TXIFG)); 						// Wait for TX buffer to be ready for new data
-		UCA1TXBUF = *dataToVerify; 							//Write the character at the location specified py the pointer
+		UCA1TXBUF = *dataToVerify; 							//Write the character at the location specified by the pointer
 		dataToVerify++; 									//Increment the TxString pointer to point to the next character
 		if(*dataToVerify == '\0' || isChar) print = false;	//Terminate loop
 	}

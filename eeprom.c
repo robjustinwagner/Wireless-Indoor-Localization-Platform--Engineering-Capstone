@@ -10,13 +10,10 @@
  */
 
 /* INCLUDES */
-#include <msp430f2619.h>
-#include <stdint.h>
+#include "gen_lib.h"
+#include "eeprom.h"
 
 /* DEFINITIONS */
-typedef int bool;
-#define true 1
-#define false 0
 
 /* VARIABLES */
 uint16_t WR_ADDR = 0x08;
@@ -27,7 +24,7 @@ int reading = 0; // boolean for state of eeprom (whether it is reading0
 unsigned char CS; // chip select
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int main(void)
+int main_eeprom(void)
 {
 	WDTCTL = WDTPW + WDTHOLD;                 // Stop watchdog timer
 
@@ -191,17 +188,15 @@ void eepromRead(uint16_t addr){
 	data = spi_eeprom_exchg(0);
 	spi_eeprom_release(); // ~CS high
 
-	int j;
 	//UART_Print("Read recv: ", &data, true);
 	//while(reading);
 
-
-
+	//int j;
 	//for(j = 0; j < 10; j++){}
 	//P2OUT |= BIT6;
 }
 
-void UART_Init(){
+void UART_Init_eeprom(){
 	BCSCTL1 = CALBC1_1MHZ;                 // MCLK at 16MHz
 	DCOCTL = CALDCO_1MHZ;
 

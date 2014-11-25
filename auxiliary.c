@@ -10,7 +10,7 @@
  */
 
 /* INCLUDES */
-#include <msp430f2619.h>
+#include "gen_lib.h"
 #include "auxiliary.h"
 
 /* DEFINITIONS */
@@ -20,7 +20,7 @@
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int main(void) {
+int aux(void) {
 	WDTCTL = WDTPW | WDTHOLD;		// Stop watchdog timer
 
 	CCTL0 = CCIE;                             // CCR0 interrupt enabled
@@ -64,7 +64,7 @@ int main(void) {
 */
 	}
 
-	return 0;
+	//return 1;
 }
 
 // Port 1 interrupt service routine

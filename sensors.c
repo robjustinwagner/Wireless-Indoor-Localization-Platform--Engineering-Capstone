@@ -10,7 +10,7 @@
  */
 
 /* INCLUDES */
-#include <msp430f2619.h>
+#include "gen_lib.h"
 #include "sensors.h"
 
 /* DEFINITIONS */

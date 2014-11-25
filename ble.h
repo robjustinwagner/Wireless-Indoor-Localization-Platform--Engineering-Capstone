@@ -13,9 +13,14 @@
 #define BLE_H_
 
 //ble functions
-void turnOnBLE();
-void turnOffBLE();
+void BLE_turnOn();
+void BLE_turnOff();
+void BLE_toggleEcho();
+void BLE_startAdvertisement();
+void BLE_stopAdvertisement();
+void BLE_changeNameTo(unsigned char *label);
 
+//debug
 void DEBUG_BLE_Echo_To_Terminal();
 
 #endif /* BLE_H_ */

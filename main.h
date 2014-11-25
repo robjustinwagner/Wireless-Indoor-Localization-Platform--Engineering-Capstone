@@ -13,6 +13,6 @@
 #define MAIN_H_
 
 //general tasks
-CLK_Init();
+void CLK_Init();
 
 #endif /* MAIN_H_ */

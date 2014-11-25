@@ -15,14 +15,11 @@
  */
 
 /* INCLUDES */
-#include <msp430f2619.h>
+#include "gen_lib.h"
 #include "ble.h"
-#include "uart.c"
+#include "uart.h"
 
 /* DEFINITIONS */
-typedef int bool;
-#define true 1
-#define false 0
 
 /* VARIABLES */
 static unsigned char data_from_terminal[8*20];
@@ -34,12 +31,55 @@ unsigned char data;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // (BLE WAKE_SW) P1.6 enable
-void turnOnBLE()  {  P1OUT |= BIT6; }
+void BLE_turnOn()  {  P1OUT |= BIT6; }
+void BLE_turnOff()  { P1OUT &= ~BIT6; }
+void BLE_toggleEcho()
+{
+	terminal_sent = true;
+	data_from_terminal[0] = '+';	//echo command
+	data_from_terminal[1] = 0x0D;	//enter
 
-void turnOffBLE()  { P1OUT &= ~BIT6; }
+	DEBUG_BLE_Echo_To_Terminal();	//force trigger
+}
+void BLE_startAdvertisement()
+{
+	terminal_sent = true;
+	data_from_terminal[0] = 'A';	//echo command
+	data_from_terminal[1] = 0x0D;	//enter
+
+	DEBUG_BLE_Echo_To_Terminal();	//force trigger
+}
+void BLE_stopAdvertisement()
+{
+	terminal_sent = true;
+	data_from_terminal[0] = 'Y';	//echo command
+	data_from_terminal[1] = 0x0D;	//enter
+
+	DEBUG_BLE_Echo_To_Terminal();	//force trigger
+}
+void BLE_changeNameTo(unsigned char *label)
+{
+	terminal_sent = true;
+
+	data_from_terminal[0] = 'S';
+	data_from_terminal[1] = '-';
+	data_from_terminal[2] = ',';
+
+	bool print = true;
+	int index = 3;
+	while(print) { 							// Loop until null char is flagged
+		data_from_terminal[index] = 'Y';	//Write the character at the location specified by the pointer
+		label++; 							//Increment the TxString pointer to point to the next character
+		index++;							//Increment the data_from_terminal to point to the next empty array index
+		if(*label == '\0')print = false;	//Terminate loop
+	}
+	data_from_terminal[index] = 0x0D;		//enter to end cmd
+
+	DEBUG_BLE_Echo_To_Terminal();		//force trigger
+}
 
 /* EXAMPLE USAGE:
- * call this method in order to put the device in an infinite loop state.
+ * call this method in an infinite loop in order to manage the ble
  * from this state, any commands sent via the terminal to the device will
  * be sent to the BLE
  */

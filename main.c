@@ -10,16 +10,16 @@
  */
 
 /* INCLUDES */
-#include <msp430f2619.h>
+#include "gen_lib.h"
 #include "main.h"
-#include "uart.c"
-#include "ble.c"
-#include "spi.c"
-#include "eeprom.c"
-#include "sensors.c"
-#include "i2c.c"
-#include "fm.c"
-#include "auxiliary.c"
+#include "uart.h"
+#include "ble.h"
+#include "spi.h"
+#include "eeprom.h"
+#include "sensors.h"
+#include "i2c.h"
+#include "fm.h"
+#include "auxiliary.h"
 
 /* DEFINITIONS */
 
@@ -38,6 +38,12 @@ int main(void)
     SPI_Init();		//initalize SPI for eeprom & sensors
     I2C_Init();		//initalize I2C for FM receivers
 
+    //BLE startup
+	BLE_turnOn();
+	int i;
+	for(i=10;i>0;i--); 								//wait for cmd msg to transmit from ble
+    BLE_toggleEcho();
+    BLE_startAdvertisement();
 
     while(1)
     {
@@ -58,7 +64,7 @@ int main(void)
 
     }
 
-	return 0;
+	//return 1;
 }
 
 void CLK_Init()
