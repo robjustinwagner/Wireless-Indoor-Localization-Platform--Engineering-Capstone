@@ -12,8 +12,6 @@
 #ifndef UART_H_
 #define UART_H_
 
-
-
 void UART_Init(); //initialization for UART A0 & A1
 
 void DEBUG_UART_Print(unsigned char *label, unsigned char *dataToVerify, bool isChar); //print

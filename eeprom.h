@@ -15,8 +15,8 @@
 //eeprom functions
 void eepromRead(uint16_t addr);
 void eepromWrite(uint16_t addr, unsigned char value);
-void UART_Print(unsigned char *label, unsigned char *dataToVerify, bool isChar);
-void UART_Init();
+//void UART_Print(unsigned char *label, unsigned char *dataToVerify, bool isChar);
+//void UART_Init();
 void spi_eeprom_release(void);
 
 #endif /* EEPROM_H_ */

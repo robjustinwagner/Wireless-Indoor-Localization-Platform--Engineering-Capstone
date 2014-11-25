@@ -20,7 +20,7 @@
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int aux(void) {
+int aux_Crap(void) {
 	WDTCTL = WDTPW | WDTHOLD;		// Stop watchdog timer
 
 	CCTL0 = CCIE;                             // CCR0 interrupt enabled

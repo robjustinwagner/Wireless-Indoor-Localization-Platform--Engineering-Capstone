@@ -12,6 +12,7 @@
 /* INCLUDES */
 #include "gen_lib.h"
 #include "eeprom.h"
+#include "uart.h"
 
 /* DEFINITIONS */
 
@@ -24,7 +25,7 @@ int reading = 0; // boolean for state of eeprom (whether it is reading0
 unsigned char CS; // chip select
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int main_eeprom(void)
+int eeprom_crap(void)
 {
 	WDTCTL = WDTPW + WDTHOLD;                 // Stop watchdog timer
 
@@ -41,17 +42,17 @@ int main_eeprom(void)
 	spi_eeprom_release(); // CS High
 
 	eepromWrite(WR_ADDR, WR_DATA);
-	UART_Print("EEPROM Write done:", &WR_DATA, true);
+	DEBUG_UART_Print("EEPROM Write done:", &WR_DATA, true);
 
 	while(1){
 		eepromRead(RD_ADDR); // stuck in loop until interrupt
-		UART_Print("EEPROM Read:", &data, true);
+		DEBUG_UART_Print("EEPROM Read:", &data, true);
 		for(j = 0; j < 10000; j++){}
 	}
 
 	//__bis_SR_register(LPM0_bits + GIE);       // CPU off, enable interrupts
 }
-
+/*
 // Test for valid RX and TX character
 #if defined(__TI_COMPILER_VERSION__) || defined(__IAR_SYSTEMS_ICC__)
 #pragma vector=USCIAB0RX_VECTOR
@@ -74,33 +75,19 @@ void __attribute__ ((interrupt(USCIAB0RX_VECTOR))) USCIB0RX_ISR (void)
 		else{
 		}
 
-		/*P2OUT &= ~BIT6;
-	UCB0TXBUF = MST_Data;                     // Send next value
-	UCB0TXBUF = 0x00;                     // Transmit address
-	int j;
-	for(j = 0; j < 10; j++){}*/
+	//P2OUT &= ~BIT6;
+	//UCB0TXBUF = MST_Data;                     // Send next value
+	//UCB0TXBUF = 0x00;                     // Transmit address
+	//int j;
+	//for(j = 0; j < 10; j++){}
 		//P2OUT |= BIT6;
-
-		/* Write - With WREN
-		 *
-		 * P2OUT &= ~BIT6;
-		 * UCB0TXBUF = 0x06; // WREN
-		 * P2OUT |= BIT6;
-		 *
-		 * for(i = 0; i < 10; i++){} // Wait
-		 * P2OUT &= ~BIT6;
-		 *  UCB0TXBUF = 0x02;                     // Write Op
-		 *  UCB0TXBUF = 0x00;                     // Transmit address
-		 *  UCB0TXBUF = 0xFF;						// Data
-		 *  P2OUT |= BIT6;
-		 *
-		 */
 
 		//__delay_cycles(50);                     // Add time between transmissions to
 
 		reading = 0;
 	}
 }                                           // make sure slave can keep up
+*/
 
 /*
  * SPI Init
@@ -188,7 +175,7 @@ void eepromRead(uint16_t addr){
 	data = spi_eeprom_exchg(0);
 	spi_eeprom_release(); // ~CS high
 
-	//UART_Print("Read recv: ", &data, true);
+	//DEBUG_UART_Print("Read recv: ", &data, true);
 	//while(reading);
 
 	//int j;
@@ -196,6 +183,7 @@ void eepromRead(uint16_t addr){
 	//P2OUT |= BIT6;
 }
 
+/*
 void UART_Init_eeprom(){
 	BCSCTL1 = CALBC1_1MHZ;                 // MCLK at 16MHz
 	DCOCTL = CALDCO_1MHZ;
@@ -245,3 +233,4 @@ void UART_Print(unsigned char *label, unsigned char *dataToVerify, bool isChar)
 	while(!(UC1IFG & UCA1TXIFG));
 
 }
+*/
