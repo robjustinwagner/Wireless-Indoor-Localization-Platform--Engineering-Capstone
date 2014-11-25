@@ -32,6 +32,8 @@ int main(void)
 {
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
 
+    // Cal added
+
     /* INITALIZATION ROUTINES */
     CLK_Init();		//initalize CLK
     UART_Init();	//initalize UART for serial debug interface & BLE
