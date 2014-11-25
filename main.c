@@ -45,6 +45,9 @@ int main(void)
     BLE_toggleEcho();
     BLE_startAdvertisement();
 
+    int i;
+    	for(i=11;i>0;i--); 								//wait for cmd msg to transmit from ble
+
     while(1)
     {
 
