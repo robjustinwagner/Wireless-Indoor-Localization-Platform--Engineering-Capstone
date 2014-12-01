@@ -78,7 +78,7 @@ void DEBUG_UART_Print(unsigned char *label, unsigned char *dataToVerify, bool is
 		while(!(UC1IFG & UCA1TXIFG)); 						// Wait for TX buffer to be ready for new data
 		UCA1TXBUF = *dataToVerify; 							//Write the character at the location specified by the pointer
 		dataToVerify++; 									//Increment the TxString pointer to point to the next character
-		if(*dataToVerify == '\0' || isChar) print = false;	//Terminate loop
+		if(*dataToVerify == '\0' || isChar || *dataToVerify == 0x0D) print = false;	//Terminate loop
 	}
 
 	//terminate line

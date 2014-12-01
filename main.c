@@ -30,6 +30,9 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
+
+	int i; //for loop index
+
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
 
     /* INITALIZATION ROUTINES */
@@ -38,33 +41,10 @@ int main(void)
     SPI_Init();		//initalize SPI for eeprom & sensors
     I2C_Init();		//initalize I2C for FM receivers
 
-    //BLE startup
-	BLE_turnOn();
-	int i;
-	for(i=10;i>0;i--); 								//wait for cmd msg to transmit from ble
-    BLE_toggleEcho();
-    BLE_startAdvertisement();
-
-    int i;
-    	for(i=11;i>0;i--); 								//wait for cmd msg to transmit from ble
+    BLE_Init();
 
     while(1)
     {
-
-    	/* BLE
-    	 * SN, WearableIndoorLocalizationDevice //set name
-    	 * issue "+" command to turn on echo
-    	 * issue "A" to start advertisement
-    	 * launch app.
-    	 * configure app to be "central" device and start active scan for BLE
-    	 * pair
-    	 * @O to output analog signal
-    	 * @I to input analog signal
-    	 * |O to set PIO's output
-    	 * |I to get PIO's inpit
-    	 */
-    	DEBUG_BLE_Echo_To_Terminal();
-
     }
 
 	//return 1;

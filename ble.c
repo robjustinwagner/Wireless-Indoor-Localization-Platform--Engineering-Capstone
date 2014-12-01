@@ -30,9 +30,31 @@ unsigned char data;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void BLE_Init()
+{
+	//BLE startup
+	BLE_turnOff();
+	BLE_turnOn();							//wait for cmd msg to transmit from ble
+	//BLE_toggleEcho();
+	BLE_startAdvertisement();
+	BLE_changeNameTo("WILDevice");
+	BLE_setPublicChar("000D", "00111100", 8);
+}
+
+
 // (BLE WAKE_SW) P1.6 enable
-void BLE_turnOn()  {  P1OUT |= BIT6; }
-void BLE_turnOff()  { P1OUT &= ~BIT6; }
+void BLE_turnOn()
+{
+	int i;
+	for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
+	P1OUT |= BIT6;
+}
+void BLE_turnOff()
+{
+	int i;
+	for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
+	P1OUT &= ~BIT6;
+}
 void BLE_toggleEcho()
 {
 	terminal_sent = true;
@@ -68,12 +90,38 @@ void BLE_changeNameTo(unsigned char *label)
 	bool print = true;
 	int index = 3;
 	while(print) { 							// Loop until null char is flagged
-		data_from_terminal[index] = 'Y';	//Write the character at the location specified by the pointer
+		data_from_terminal[index] = *label;	//Write the character at the location specified by the pointer
 		label++; 							//Increment the TxString pointer to point to the next character
 		index++;							//Increment the data_from_terminal to point to the next empty array index
 		if(*label == '\0')print = false;	//Terminate loop
 	}
 	data_from_terminal[index] = 0x0D;		//enter to end cmd
+
+	DEBUG_BLE_Echo_To_Terminal();		//force trigger
+}
+void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charValLength)
+{
+	terminal_sent = true;
+
+	data_from_terminal[0] = 'S';
+	data_from_terminal[1] = 'H';
+	data_from_terminal[2] = 'W';
+	data_from_terminal[3] = ',';
+
+	bool print = true;
+	int index = 4;
+	while(index < 8)
+	{
+		data_from_terminal[index] = *charID;
+		charID++;
+		index++;
+	}
+	while(index < (charValLength+8)) { 			// Loop until null char is flagged
+		data_from_terminal[index] = *charVal;	//Write the character at the location specified by the pointer
+		charVal++; 								//Increment the TxString pointer to point to the next character
+		index++;								//Increment the data_from_terminal to point to the next empty array index
+	}
+	data_from_terminal[index] = 0x0D;			//enter to end cmd
 
 	DEBUG_BLE_Echo_To_Terminal();		//force trigger
 }
@@ -97,11 +145,11 @@ void DEBUG_BLE_Echo_To_Terminal()
 			unsigned int index = 0;
 			while(data_from_terminal[index] != 0x0D)
 			{
-				while(!(UC1IFG & UCA1TXIFG)); //wait for last transmit
+				while(!(UC0IFG & UCA0TXIFG)); //wait for last transmit
 				UCA0TXBUF = data_from_terminal[index];
 				index++;
 			}
-			while(!(UC1IFG & UCA1TXIFG)); //wait for last transmit
+			while(!(UC0IFG & UCA0TXIFG)); //wait for last transmit
 			UCA0TXBUF = data_from_terminal[index];
 		}
 		if(terminal_received)
@@ -109,6 +157,7 @@ void DEBUG_BLE_Echo_To_Terminal()
 			{
 				terminal_received = false;
 				DEBUG_UART_Print("Terminal received from BLE: ", &data_from_ble[0], false);
+				/*
 				unsigned int index = 0;
 				while(data_from_ble[index] != 0x0D)
 				{
@@ -118,6 +167,7 @@ void DEBUG_BLE_Echo_To_Terminal()
 				}
 				while(!(UC1IFG & UCA1TXIFG)); //wait for last transmit
 				UCA1TXBUF = data_from_ble[index];
+				*/
 			}
 		}
 	//}
@@ -150,7 +200,6 @@ __interrupt void USCI0RX_ISR(void)
 	static unsigned char *bleDataP = &data_from_ble[0];
 
 	*bleDataP = UCA0RXBUF;
-	/*
 	if(*bleDataP == 0x0D)
 	{
 		terminal_received = true;
@@ -160,6 +209,4 @@ __interrupt void USCI0RX_ISR(void)
 	{
 		bleDataP++;
 	}
-	*/
-	terminal_received = true;
 }

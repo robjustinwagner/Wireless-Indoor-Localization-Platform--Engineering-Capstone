@@ -10,5 +10,5 @@
 	<rts value="libc.a"/>
 	<createSlaveProjects value=""/>
 	<templateProperties value="id=com.ti.ccstudio.project.templates.helloWorld_msp430,"/>
-	<isTargetManual value="true"/>
+	<isTargetManual value="false"/>
 </projectOptions>
