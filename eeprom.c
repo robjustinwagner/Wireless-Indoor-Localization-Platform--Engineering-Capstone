@@ -22,31 +22,21 @@ uint16_t RD_ADDR = 0x08;
 unsigned char WR_DATA = 'x';
 unsigned char data;
 int reading = 0; // boolean for state of eeprom (whether it is reading0
-unsigned char CS; // chip select
+unsigned const char CS = BIT6; // chip select
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int eeprom_crap(void)
+int eeprom_crap()
 {
-	WDTCTL = WDTPW + WDTHOLD;                 // Stop watchdog timer
 
-	eeprom_Init();
-	UART_Init();
+	EEPROM_Release(); // CS High
 
-	// Wait for slave to initialize
-	int j;
-	for(j = 0; j < 100; j++){}
-
-	__bis_SR_register(GIE);
-
-	CS = BIT6;
-	spi_eeprom_release(); // CS High
-
-	eepromWrite(WR_ADDR, WR_DATA);
-	DEBUG_UART_Print("EEPROM Write done:", &WR_DATA, true);
+	EEPROM_Write(WR_ADDR, WR_DATA);
+	DEBUG_UART_Print("EEPROM Write done: ", &WR_DATA, true);
 
 	while(1){
-		eepromRead(RD_ADDR); // stuck in loop until interrupt
-		DEBUG_UART_Print("EEPROM Read:", &data, true);
+		EEPROM_Read(RD_ADDR); // stuck in loop until interrupt
+		DEBUG_UART_Print("EEPROM Read: ", &data, true);
+		int j;
 		for(j = 0; j < 10000; j++){}
 	}
 
@@ -93,17 +83,17 @@ void __attribute__ ((interrupt(USCIAB0RX_VECTOR))) USCIB0RX_ISR (void)
  * SPI Init
  */
 
-void spi_eeprom_select() {
-	P2OUT &= ~BIT6;
+void EEPROM_Select() {
+	P2OUT &= ~CS;
 	__delay_cycles(200);
 }
 
-void spi_eeprom_release() {
-	P2OUT |= BIT6;
+void EEPROM_Release() {
+	P2OUT |= CS;
 	__delay_cycles(200);
 }
 
-unsigned char spi_eeprom_exchg(unsigned char dataOut)
+unsigned char EEPROM_Exchange(unsigned char dataOut)
 {
 	unsigned char dataIn = 0;
 
@@ -121,12 +111,13 @@ unsigned char spi_eeprom_exchg(unsigned char dataOut)
  * addr - Hex value for address of EEPROM to write
  * value - Hex value of DATA to write to EEPROM
  */
-void eepromWrite(uint16_t addr, unsigned char value){
+void EEPROM_Write(uint16_t addr, unsigned char value)
+{
 
 	// Write - With WREN
-	spi_eeprom_select();
-	spi_eeprom_exchg(0x06);
-	spi_eeprom_release(); // CS = high
+	EEPROM_Select();
+	EEPROM_Exchange(0x06);
+	EEPROM_Release(); // CS = high
 
 	//UART_Print("EEPROM wren (recv):", &data, true);
 
@@ -135,12 +126,12 @@ void eepromWrite(uint16_t addr, unsigned char value){
 	//for(j = 0; j < 50; j++){}
 
 	// Write Value
-	spi_eeprom_select(); // CS Low
-	spi_eeprom_exchg(0x02);
-	spi_eeprom_exchg(addr>>8);                     // Transmit address
-	spi_eeprom_exchg(addr & 0xFF);
-	spi_eeprom_exchg(value);						// Data
-	spi_eeprom_release(); // CS high
+	EEPROM_Select(); // CS Low
+	EEPROM_Exchange(0x02);
+	EEPROM_Exchange(addr>>8);                     // Transmit address
+	EEPROM_Exchange(addr & 0xFF);
+	EEPROM_Exchange(value);						// Data
+	EEPROM_Release(); // CS high
 
 	//UART_Print("EEPROM write (recv):", &data, true);
 
@@ -148,9 +139,9 @@ void eepromWrite(uint16_t addr, unsigned char value){
 	//for(j = 0; j < 50; j++){}
 
 	// Write Disable
-	spi_eeprom_select(); // CS = Low
-	spi_eeprom_exchg(0x04); // WREN
-	spi_eeprom_release(); // CS = high
+	EEPROM_Select(); // CS = Low
+	EEPROM_Exchange(0x04); // WREN
+	EEPROM_Release(); // CS = high
 
 	//UART_Print("EEPROM wdisable (recv):", &data, true);
 
@@ -164,16 +155,17 @@ void eepromWrite(uint16_t addr, unsigned char value){
  * EEPROM read
  * addr - Hex value for address of EEPROM to write
  */
-void eepromRead(uint16_t addr){
+void EEPROM_Read(uint16_t addr)
+{
 
 	// READ
 	//reading = 1;
-	spi_eeprom_select(); // ~CS Low
-	spi_eeprom_exchg(0x03);                     // Transmit operation
-	spi_eeprom_exchg(addr>>8);                     // Transmit address
-	spi_eeprom_exchg(addr & 0xFF);
-	data = spi_eeprom_exchg(0);
-	spi_eeprom_release(); // ~CS high
+	EEPROM_Select(); // ~CS Low
+	EEPROM_Exchange(0x03);                     // Transmit operation
+	EEPROM_Exchange(addr>>8);                     // Transmit address
+	EEPROM_Exchange(addr & 0xFF);
+	data = EEPROM_Exchange(0);
+	EEPROM_Release(); // ~CS high
 
 	//DEBUG_UART_Print("Read recv: ", &data, true);
 	//while(reading);
@@ -182,55 +174,3 @@ void eepromRead(uint16_t addr){
 	//for(j = 0; j < 10; j++){}
 	//P2OUT |= BIT6;
 }
-
-/*
-void UART_Init_eeprom(){
-	BCSCTL1 = CALBC1_1MHZ;                 // MCLK at 16MHz
-	DCOCTL = CALDCO_1MHZ;
-
-
-	P3SEL |= 0xC0;                             // P3.6,7 = USCI_A0 TXD/RXD
-
-	//115200 baud, clocked from 16MHz SMCLK
-	UCA1CTL1 |= UCSSEL_2 ;        // CLK = SMCL
-	UCA1BR0 = 8;               // 115200 baud if SMCLK@16MHz
-	UCA1BR1 = 0x00;
-	UCA1MCTL = 6; //UCBRS_7;			  // Modulation UCBRSx = 7
-
-	UC1IFG   &= ~(UCA1TXIFG | UCA1RXIFG);          // clear possible pending interrupts
-	UC1IE	 &= ~UCA1TXIE;
-	UCA1CTL1 &= ~UCSWRST;                          // Initialize USCI state machine
-	UC1IE    |=  (UCA1RXIE  );//| UCA1TXIE);           // Enable USCI_A1 TX & RX interrupt
-
-	__bis_SR_register(GIE);       			// set 'general interrupt enable' bit
-	__enable_interrupt();
-}
-
-void UART_Print(unsigned char *label, unsigned char *dataToVerify, bool isChar)
-{
-
-	bool print = true;
-	while(print){ // Loop until null char is flagged
-		while(!(UC1IFG & UCA1TXIFG)); // Wait for TX buffer to be ready for new data
-		UCA1TXBUF = *label; //Write the character at the location specified py the pointer
-		label++; //Increment the TxString pointer to point to the next character
-		if(*label == '\0') { print = false; } //Terminate loop
-	}
-
-	print = true;
-	while(print){ // Loop until null char is flagged
-		while(!(UC1IFG & UCA1TXIFG)); // Wait for TX buffer to be ready for new data
-		UCA1TXBUF = *dataToVerify; //Write the character at the location specified py the pointer
-		dataToVerify++; //Increment the TxString pointer to point to the next character
-		if(*dataToVerify == '\0' || isChar) { print = false; } //Terminate loop
-	}
-
-	//terminate line
-	while(!(UC1IFG & UCA1TXIFG));
-	UCA1TXBUF = '\n';
-	while(!(UC1IFG & UCA1TXIFG));
-	UCA1TXBUF = '\r';
-	while(!(UC1IFG & UCA1TXIFG));
-
-}
-*/

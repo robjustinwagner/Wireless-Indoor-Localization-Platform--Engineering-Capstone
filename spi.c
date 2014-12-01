@@ -41,6 +41,4 @@ void SPI_Init()
 
 	UCB0CTL1 &= ~UCSWRST;                     	// **Initialize USCI state machine**
 
-	//IE2 |= UCB0RXIE;                          // Enable USCI0 RX interrupt
-
 }

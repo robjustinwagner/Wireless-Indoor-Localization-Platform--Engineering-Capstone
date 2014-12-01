@@ -12,6 +12,7 @@ C_SRCS += \
 ../eeprom.c \
 ../fm.c \
 ../i2c.c \
+../interrupts.c \
 ../main.c \
 ../sensors.c \
 ../spi.c \
@@ -23,6 +24,7 @@ OBJS += \
 ./eeprom.obj \
 ./fm.obj \
 ./i2c.obj \
+./interrupts.obj \
 ./main.obj \
 ./sensors.obj \
 ./spi.obj \
@@ -34,6 +36,7 @@ C_DEPS += \
 ./eeprom.pp \
 ./fm.pp \
 ./i2c.pp \
+./interrupts.pp \
 ./main.pp \
 ./sensors.pp \
 ./spi.pp \
@@ -45,6 +48,7 @@ C_DEPS__QUOTED += \
 "eeprom.pp" \
 "fm.pp" \
 "i2c.pp" \
+"interrupts.pp" \
 "main.pp" \
 "sensors.pp" \
 "spi.pp" \
@@ -56,6 +60,7 @@ OBJS__QUOTED += \
 "eeprom.obj" \
 "fm.obj" \
 "i2c.obj" \
+"interrupts.obj" \
 "main.obj" \
 "sensors.obj" \
 "spi.obj" \
@@ -67,6 +72,7 @@ C_SRCS__QUOTED += \
 "../eeprom.c" \
 "../fm.c" \
 "../i2c.c" \
+"../interrupts.c" \
 "../main.c" \
 "../sensors.c" \
 "../spi.c" \

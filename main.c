@@ -31,7 +31,7 @@
 int main(void)
 {
 
-	int i; //for loop index
+	//int i; //for loop index
 
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
 

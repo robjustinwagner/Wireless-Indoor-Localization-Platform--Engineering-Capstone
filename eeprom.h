@@ -13,10 +13,10 @@
 #define EEPROM_H_
 
 //eeprom functions
-void eepromRead(uint16_t addr);
-void eepromWrite(uint16_t addr, unsigned char value);
-//void UART_Print(unsigned char *label, unsigned char *dataToVerify, bool isChar);
-//void UART_Init();
-void spi_eeprom_release(void);
+void EEPROM_Select();
+void EEPROM_Release();
+unsigned char EEPROM_Exchange(unsigned char dataOut);
+void EEPROM_Read(uint16_t addr);
+void EEPROM_Write(uint16_t addr, unsigned char value);
 
 #endif /* EEPROM_H_ */

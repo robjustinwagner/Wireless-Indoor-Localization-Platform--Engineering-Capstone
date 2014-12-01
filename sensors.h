@@ -12,7 +12,7 @@
 #ifndef SENSORS_H_
 #define SENSORS_H_
 
-void initSENSORS(); //initialize sensors
+void SENSORS_Init(); //initialize sensors
 
 //sensors functions
 

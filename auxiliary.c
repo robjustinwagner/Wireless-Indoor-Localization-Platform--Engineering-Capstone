@@ -86,10 +86,5 @@ __interrupt void Port_4(void)
 
 }
 */
-// Timer A0 interrupt service routine
-#pragma vector=TIMER0_A0_VECTOR
-__interrupt void Timer_A (void)
-{
-	P6OUT ^= BIT5;                            // Toggle P1.0
-}
+
 

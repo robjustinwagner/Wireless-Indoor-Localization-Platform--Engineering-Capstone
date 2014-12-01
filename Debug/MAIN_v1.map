@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v4.3.3                      
 ******************************************************************************
->> Linked Sun Nov 30 22:48:17 2014
+>> Linked Mon Dec 01 14:10:07 2014
 
 OUTPUT FILE NAME:   <MAIN_v1.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 00002160
@@ -19,7 +19,7 @@ MEMORY CONFIGURATION
   INFOB                 00001080   00000040  00000000  00000040  RWIX
   INFOA                 000010c0   00000040  00000000  00000040  RWIX
   RAM                   00001100   00001000  0000019c  00000e64  RWIX
-  FLASH                 00002100   0000debe  000000fe  0000ddc0  RWIX
+  FLASH                 00002100   0000debe  000000fc  0000ddc2  RWIX
   INT00                 0000ffc0   00000002  00000002  00000000  RWIX
   INT01                 0000ffc2   00000002  00000002  00000000  RWIX
   INT02                 0000ffc4   00000002  00000002  00000000  RWIX
@@ -71,7 +71,8 @@ section   page    origin      length       input sections
 *          0    00001100    00000000     UNINITIALIZED
 
 .data      0    00001240    0000000c     UNINITIALIZED
-                  00001240    0000000c     ble.obj (.data)
+                  00001240    00000008     interrupts.obj (.data)
+                  00001248    00000004     ble.obj (.data)
 
 .TI.persistent 
 *          0    00001240    00000000     UNINITIALIZED
@@ -82,20 +83,20 @@ section   page    origin      length       input sections
 
 .text:_isr 
 *          0    00002100    00000082     
-                  00002100    00000030     ble.obj (.text:_isr:USCI0RX_ISR)
-                  00002130    00000030     ble.obj (.text:_isr:USCI1RX_ISR)
+                  00002100    00000030     interrupts.obj (.text:_isr:USCI0RX_ISR)
+                  00002130    00000030     interrupts.obj (.text:_isr:USCI1RX_ISR)
                   00002160    0000001a     rts430x_lc_rd_eabi.lib : boot.obj (.text:_isr:_c_int00_noexit)
-                  0000217a    00000008     auxiliary.obj (.text:_isr:Timer_A)
+                  0000217a    00000008     interrupts.obj (.text:_isr:Timer_A)
 
 .const     0    00002182    00000048     
                   00002182    00000048     ble.obj (.const:.string)
 
-.cinit     0    000021ca    00000034     
-                  000021ca    00000011     (.cinit..data.load) [load image, compression = rle]
-                  000021db    00000001     --HOLE-- [fill = 0]
-                  000021dc    0000000c     (__TI_handler_table)
-                  000021e8    00000006     (.cinit..bss.load) [load image, compression = zero_init]
-                  000021ee    00000010     (__TI_cinit_table)
+.cinit     0    000021ca    00000032     
+                  000021ca    0000000f     (.cinit..data.load) [load image, compression = rle]
+                  000021d9    00000001     --HOLE-- [fill = 0]
+                  000021da    0000000c     (__TI_handler_table)
+                  000021e6    00000006     (.cinit..bss.load) [load image, compression = zero_init]
+                  000021ec    00000010     (__TI_cinit_table)
 
 RESERVED0 
 *          0    0000ffc0    00000002     
@@ -165,7 +166,7 @@ USCIAB1TX
 
 USCIAB1RX 
 *          0    0000ffe2    00000002     
-                  0000ffe2    00000002     ble.obj (.int17)
+                  0000ffe2    00000002     interrupts.obj (.int17)
 
 PORT1      0    0000ffe4    00000002     
                   0000ffe4    00000002     rts430x_lc_rd_eabi.lib : int18.obj (.int18)
@@ -186,13 +187,13 @@ USCIAB0TX
 
 USCIAB0RX 
 *          0    0000ffee    00000002     
-                  0000ffee    00000002     ble.obj (.int23)
+                  0000ffee    00000002     interrupts.obj (.int23)
 
 TIMERA1    0    0000fff0    00000002     
                   0000fff0    00000002     rts430x_lc_rd_eabi.lib : int24.obj (.int24)
 
 TIMERA0    0    0000fff2    00000002     
-                  0000fff2    00000002     auxiliary.obj (.int25)
+                  0000fff2    00000002     interrupts.obj (.int25)
 
 WDT        0    0000fff4    00000002     
                   0000fff4    00000002     rts430x_lc_rd_eabi.lib : int26.obj (.int26)
@@ -240,14 +241,14 @@ NMI        0    0000fffc    00000002
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 000021ee records: 2, size/record: 8, table size: 16
-	.data: load addr=000021ca, load size=00000011 bytes, run addr=00001240, run size=0000000c bytes, compression=rle
-	.bss: load addr=000021e8, load size=00000006 bytes, run addr=00001100, run size=00000140 bytes, compression=zero_init
+__TI_cinit_table @ 000021ec records: 2, size/record: 8, table size: 16
+	.data: load addr=000021ca, load size=0000000f bytes, run addr=00001240, run size=0000000c bytes, compression=rle
+	.bss: load addr=000021e6, load size=00000006 bytes, run addr=00001100, run size=00000140 bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 000021dc records: 3, size/record: 4, table size: 12
+__TI_handler_table @ 000021da records: 3, size/record: 4, table size: 12
 	index: 0, handler: __TI_zero_init
 	index: 1, handler: __TI_decompress_rle24
 	index: 2, handler: __TI_decompress_none
@@ -496,10 +497,10 @@ address    name
 00000120   WDTCTL
 00002100   __STACK_END
 00000050   __STACK_SIZE
-000021ee   __TI_CINIT_Base
-000021fe   __TI_CINIT_Limit
-000021dc   __TI_Handler_Table_Base
-000021e8   __TI_Handler_Table_Limit
+000021ec   __TI_CINIT_Base
+000021fc   __TI_CINIT_Limit
+000021da   __TI_Handler_Table_Base
+000021e6   __TI_Handler_Table_Limit
 UNDEFED    __TI_INITARRAY_Base
 UNDEFED    __TI_INITARRAY_Limit
 000103c2   __TI_ISR_TRAP
@@ -549,8 +550,12 @@ ffffffff   __c_args__
 000103ce   _system_pre_init
 000103d2   abort
 ffffffff   binit
+00001100   data_from_ble
+000011a0   data_from_terminal
 0001033e   main
 0001039c   memcpy
+00001248   terminal_received
+0000124a   terminal_sent
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -781,6 +786,10 @@ address    name
 000010fd   CALBC1_8MHZ
 000010fe   CALDCO_1MHZ
 000010ff   CALBC1_1MHZ
+00001100   data_from_ble
+000011a0   data_from_terminal
+00001248   terminal_received
+0000124a   terminal_sent
 000020b0   _stack
 00002100   USCI0RX_ISR
 00002100   __STACK_END
@@ -788,10 +797,10 @@ address    name
 00002160   _c_int00
 00002160   _c_int00_noexit
 0000217a   Timer_A
-000021dc   __TI_Handler_Table_Base
-000021e8   __TI_Handler_Table_Limit
-000021ee   __TI_CINIT_Base
-000021fe   __TI_CINIT_Limit
+000021da   __TI_Handler_Table_Base
+000021e6   __TI_Handler_Table_Limit
+000021ec   __TI_CINIT_Base
+000021fc   __TI_CINIT_Limit
 0000ffc0   __TI_int00
 0000ffc2   __TI_int01
 0000ffc4   __TI_int02
@@ -852,4 +861,4 @@ ffffffff   binit
 UNDEFED    __TI_INITARRAY_Base
 UNDEFED    __TI_INITARRAY_Limit
 
-[294 symbols]
+[298 symbols]

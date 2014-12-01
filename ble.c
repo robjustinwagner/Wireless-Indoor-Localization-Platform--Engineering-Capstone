@@ -22,10 +22,10 @@
 /* DEFINITIONS */
 
 /* VARIABLES */
-static unsigned char data_from_terminal[8*20];
-static unsigned char data_from_ble[8*20];
-static bool terminal_received = false;
-static bool terminal_sent = false;
+unsigned char data_from_terminal[8*20];
+unsigned char data_from_ble[8*20];
+bool terminal_received = false;
+bool terminal_sent = false;
 unsigned char data;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ void BLE_changeNameTo(unsigned char *label)
 	data_from_terminal[2] = ',';
 
 	bool print = true;
-	int index = 3;
+	unsigned int index = 3;
 	while(print) { 							// Loop until null char is flagged
 		data_from_terminal[index] = *label;	//Write the character at the location specified by the pointer
 		label++; 							//Increment the TxString pointer to point to the next character
@@ -108,8 +108,7 @@ void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charVa
 	data_from_terminal[2] = 'W';
 	data_from_terminal[3] = ',';
 
-	bool print = true;
-	int index = 4;
+	unsigned int index = 4;
 	while(index < 8)
 	{
 		data_from_terminal[index] = *charID;
@@ -172,41 +171,4 @@ void DEBUG_BLE_Echo_To_Terminal()
 		}
 	//}
 
-}
-
-// Echo back RXed character, confirm TX buffer is ready first
-#pragma vector=USCIAB1RX_VECTOR
-__interrupt void USCI1RX_ISR(void)
-{
-	static unsigned char *terminalDataP = &data_from_terminal[0];
-
-	*terminalDataP = UCA1RXBUF;
-	if(*terminalDataP == 0x0D)
-	{
-		terminal_sent = true;
-		terminalDataP = &data_from_terminal[0]; //reset ptr
-	}
-	else
-	{
-		terminalDataP++;
-	}
-
-}
-
-
-#pragma vector=USCIAB0RX_VECTOR
-__interrupt void USCI0RX_ISR(void)
-{
-	static unsigned char *bleDataP = &data_from_ble[0];
-
-	*bleDataP = UCA0RXBUF;
-	if(*bleDataP == 0x0D)
-	{
-		terminal_received = true;
-		bleDataP = &data_from_ble[0]; //reset ptr
-	}
-	else
-	{
-		bleDataP++;
-	}
 }

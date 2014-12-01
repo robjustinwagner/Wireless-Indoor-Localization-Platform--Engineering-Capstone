@@ -13,6 +13,7 @@ $(GEN_CMDS__FLAG) \
 "./eeprom.obj" \
 "./fm.obj" \
 "./i2c.obj" \
+"./interrupts.obj" \
 "./main.obj" \
 "./sensors.obj" \
 "./spi.obj" \
@@ -148,8 +149,8 @@ MAIN_v1.hex: $(EXE_OUTPUTS)
 # Other Targets
 clean:
 	-$(RM) $(EXE_OUTPUTS__QUOTED)$(BIN_OUTPUTS__QUOTED)
-	-$(RM) "auxiliary.pp" "ble.pp" "eeprom.pp" "fm.pp" "i2c.pp" "main.pp" "sensors.pp" "spi.pp" "uart.pp" 
-	-$(RM) "auxiliary.obj" "ble.obj" "eeprom.obj" "fm.obj" "i2c.obj" "main.obj" "sensors.obj" "spi.obj" "uart.obj" 
+	-$(RM) "auxiliary.pp" "ble.pp" "eeprom.pp" "fm.pp" "i2c.pp" "interrupts.pp" "main.pp" "sensors.pp" "spi.pp" "uart.pp" 
+	-$(RM) "auxiliary.obj" "ble.obj" "eeprom.obj" "fm.obj" "i2c.obj" "interrupts.obj" "main.obj" "sensors.obj" "spi.obj" "uart.obj" 
 	-@echo 'Finished clean'
 	-@echo ' '
 

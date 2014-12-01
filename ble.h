@@ -12,6 +12,12 @@
 #ifndef BLE_H_
 #define BLE_H_
 
+//variables
+extern unsigned char data_from_terminal[];
+extern unsigned char data_from_ble[];
+extern bool terminal_received;
+extern bool terminal_sent;
+
 //ble init
 void BLE_Init();
 
