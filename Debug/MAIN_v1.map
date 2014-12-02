@@ -1,7 +1,7 @@
 ******************************************************************************
                   MSP430 Linker PC v4.3.3                      
 ******************************************************************************
->> Linked Mon Dec 01 20:30:03 2014
+>> Linked Tue Dec 02 17:08:41 2014
 
 OUTPUT FILE NAME:   <MAIN_v1.out>
 ENTRY POINT SYMBOL: "_c_int00"  address: 00002160
@@ -18,8 +18,8 @@ MEMORY CONFIGURATION
   INFOC                 00001040   00000040  00000000  00000040  RWIX
   INFOB                 00001080   00000040  00000000  00000040  RWIX
   INFOA                 000010c0   00000040  00000000  00000040  RWIX
-  RAM                   00001100   00001000  0000019c  00000e64  RWIX
-  FLASH                 00002100   0000debe  000000ec  0000ddd2  RWIX
+  RAM                   00001100   00001000  00000584  00000a7c  RWIX
+  FLASH                 00002100   0000debe  00000210  0000dcae  RWIX
   INT00                 0000ffc0   00000002  00000002  00000000  RWIX
   INT01                 0000ffc2   00000002  00000002  00000000  RWIX
   INT02                 0000ffc4   00000002  00000002  00000000  RWIX
@@ -52,7 +52,7 @@ MEMORY CONFIGURATION
   INT29                 0000fffa   00000002  00000002  00000000  RWIX
   INT30                 0000fffc   00000002  00000002  00000000  RWIX
   RESET                 0000fffe   00000002  00000002  00000000  RWIX
-  FLASH2                00010000   00010000  0000037a  0000fc86  RWIX
+  FLASH2                00010000   00010000  000022ae  0000dd52  RWIX
 
 
 SECTION ALLOCATION MAP
@@ -63,40 +63,75 @@ section   page    origin      length       input sections
 .init_array 
 *          0    00002100    00000000     UNINITIALIZED
 
-.bss       0    00001100    00000140     UNINITIALIZED
-                  00001100    000000a0     (.common:data_from_ble)
-                  000011a0    000000a0     (.common:data_from_terminal)
+.bss       0    00001100    00000226     UNINITIALIZED
+                  00001100    000000a0     (.common:__TI_tmpnams)
+                  000011a0    000000a0     (.common:data_from_ble)
+                  00001240    000000a0     (.common:data_from_terminal)
+                  000012e0    00000012     (.common:pool$1)
+                  000012f2    0000000c     (.common:accelerometer_data)
+                  000012fe    00000008     (.common:parmbuf)
+                  00001306    00000004     (.common:__TI_cleanup_ptr)
+                  0000130a    00000004     (.common:__TI_dtors_ptr)
+                  0000130e    00000004     (.common:acc_divider)
+                  00001312    00000004     (.common:curr_vla_pool)
+                  00001316    00000004     (.common:sys_base)
+                  0000131a    00000004     (.common:sys_free)
+                  0000131e    00000002     (.common:COLS)
+                  00001320    00000002     (.common:aux_j)
+                  00001322    00000002     (.common:j)
+                  00001324    00000002     (.common:memsize)
 
 .TI.noinit 
 *          0    00001100    00000000     UNINITIALIZED
 
-.data      0    00001240    0000000c     UNINITIALIZED
-                  00001240    00000008     interrupts.obj (.data)
-                  00001248    00000004     ble.obj (.data)
+.data      0    00001326    0000019e     UNINITIALIZED
+                  00001326    000000c8     rts430x_lc_rd_eabi.lib : defs.obj (.data:_ftable)
+                  000013ee    00000078                            : lowlev.obj (.data:_device)
+                  00001466    0000003c                            : lowlev.obj (.data:_stream)
+                  000014a2    00000008     interrupts.obj (.data)
+                  000014aa    00000008     rts430x_lc_rd_eabi.lib : _lock.obj (.data)
+                  000014b2    00000004     ble.obj (.data)
+                  000014b6    00000004     rts430x_lc_rd_eabi.lib : lowlev.obj (.data)
+                  000014ba    00000004     sensors.obj (.data)
+                  000014be    00000002     rts430x_lc_rd_eabi.lib : defs.obj (.data)
+                  000014c0    00000002                            : fopen.obj (.data)
+                  000014c2    00000002                            : memory.obj (.data)
 
 .TI.persistent 
-*          0    00001240    00000000     UNINITIALIZED
+*          0    00001326    00000000     UNINITIALIZED
+
+.cio       0    000014c4    00000120     UNINITIALIZED
+                  000014c4    00000120     rts430x_lc_rd_eabi.lib : trgmsg.obj (.cio)
+
+.sysmem    0    000015e4    00000050     UNINITIALIZED
+                  000015e4    00000006     rts430x_lc_rd_eabi.lib : memory.obj (.sysmem)
+                  000015ea    0000004a     --HOLE--
 
 .stack     0    000020b0    00000050     UNINITIALIZED
                   000020b0    00000004     rts430x_lc_rd_eabi.lib : boot.obj (.stack)
                   000020b4    0000004c     --HOLE--
 
 .text:_isr 
-*          0    00002100    00000082     
+*          0    00002100    00000084     
                   00002100    00000030     interrupts.obj (.text:_isr:USCI0RX_ISR)
                   00002130    00000030     interrupts.obj (.text:_isr:USCI1RX_ISR)
-                  00002160    0000001a     rts430x_lc_rd_eabi.lib : boot.obj (.text:_isr:_c_int00_noexit)
-                  0000217a    00000008     interrupts.obj (.text:_isr:Timer_A)
+                  00002160    0000001c     rts430x_lc_rd_eabi.lib : boot.obj (.text:_isr:_c_int00_noargs)
+                  0000217c    00000008     interrupts.obj (.text:_isr:Timer_A)
 
-.const     0    00002182    00000038     
-                  00002182    00000038     ble.obj (.const:.string)
+.const     0    00002184    000000f8     
+                  00002184    00000048     main.obj (.const:.string)
+                  000021cc    00000038     ble.obj (.const:.string)
+                  00002204    00000036     rts430x_lc_rd_eabi.lib : vla_alloc.obj (.const:.string)
+                  0000223a    00000028     sensors.obj (.const:$P$T0$1)
+                  00002262    00000014     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.const:.string)
+                  00002276    00000006     main.obj (.const)
 
-.cinit     0    000021ba    00000032     
-                  000021ba    0000000f     (.cinit..data.load) [load image, compression = rle]
-                  000021c9    00000001     --HOLE-- [fill = 0]
-                  000021ca    0000000c     (__TI_handler_table)
-                  000021d6    00000006     (.cinit..bss.load) [load image, compression = zero_init]
-                  000021dc    00000010     (__TI_cinit_table)
+.cinit     0    0000227c    00000094     
+                  0000227c    00000064     (.cinit..data.load) [load image, compression = rle]
+                  000022e0    0000000c     (__TI_handler_table)
+                  000022ec    00000006     (.cinit..bss.load) [load image, compression = zero_init]
+                  000022f2    00000006     (.cinit..cio.load) [load image, compression = zero_init]
+                  000022f8    00000018     (__TI_cinit_table)
 
 RESERVED0 
 *          0    0000ffc0    00000002     
@@ -214,40 +249,125 @@ NMI        0    0000fffc    00000002
 .reset     0    0000fffe    00000002     
                   0000fffe    00000002     rts430x_lc_rd_eabi.lib : boot.obj (.reset)
 
-.text      0    00010000    0000037a     
-                  00010000    00000070     uart.obj (.text:UART_Init)
-                  00010070    0000006e     rts430x_lc_rd_eabi.lib : autoinit.obj (.text:_auto_init_hold_wdt)
-                  000100de    0000006c     uart.obj (.text:DEBUG_UART_Print)
-                  0001014a    00000062     rts430x_lc_rd_eabi.lib : copy_decompress_rle.obj (.text:__TI_decompress_rle_core)
-                  000101ac    00000058     ble.obj (.text:DEBUG_BLE_Echo_To_Terminal)
-                  00010204    00000042     ble.obj (.text:BLE_changeNameTo)
-                  00010246    0000003a     spi.obj (.text:SPI_Init)
-                  00010280    00000026     main.obj (.text:CLK_Init)
-                  000102a6    00000024     rts430x_lc_rd_eabi.lib : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
-                  000102ca    0000001c     main.obj (.text:main)
-                  000102e6    00000016     ble.obj (.text:BLE_Init)
-                  000102fc    00000016     ble.obj (.text:BLE_startAdvertisement)
-                  00010312    00000016     ble.obj (.text:BLE_turnOff)
-                  00010328    00000016     ble.obj (.text:BLE_turnOn)
-                  0001033e    00000014     rts430x_lc_rd_eabi.lib : memcpy.obj (.text:memcpy)
-                  00010352    00000012                            : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
-                  00010364    00000006                            : isr_trap.obj (.text:__TI_ISR_TRAP)
-                  0001036a    00000006                            : copy_decompress_rle.obj (.text:decompress:rle24:__TI_decompress_rle24)
-                  00010370    00000004                            : pre_init.obj (.text:_system_pre_init)
-                  00010374    00000004                            : exit.obj (.text:abort)
-                  00010378    00000002     i2c.obj (.text:I2C_Init)
+.text      0    00010000    000022ae     
+                  00010000    00000198     rts430x_lc_rd_eabi.lib : vla_alloc.obj (.text:__vla_alloc)
+                  00010198    00000144                            : memory.obj (.text:realloc)
+                  000102dc    00000132                            : _printfi_min.obj (.text:_setfield)
+                  0001040e    0000010c     main.obj (.text:dumpToTXT)
+                  0001051a    00000106     rts430x_lc_rd_eabi.lib : fopen.obj (.text:_openfile)
+                  00010620    000000f0                            : fputs.obj (.text:fputs)
+                  00010710    000000ee     main.obj (.text:floatToHex)
+                  000107fe    000000e2     main.obj (.text:main)
+                  000108e0    000000e0     rts430x_lc_rd_eabi.lib : setvbuf.obj (.text:setvbuf)
+                  000109c0    000000d2                            : _printfi_min.obj (.text:__TI_printfi_minimal)
+                  00010a92    000000d0                            : vla_alloc.obj (.text:__vla_dealloc)
+                  00010b62    000000ba                            : memory.obj (.text:malloc)
+                  00010c1c    000000b2                            : lowlev.obj (.text:open)
+                  00010cce    000000a8                            : vla_alloc.obj (.text:_Z21free_dead_allocationsPv)
+                  00010d76    000000a4     sensors.obj (.text:collectSensorData)
+                  00010e1a    0000009e     rts430x_lc_rd_eabi.lib : trgdrv.obj (.text:HOSTlseek)
+                  00010eb8    00000090                            : fputc.obj (.text:fputc)
+                  00010f48    0000008e                            : memory.obj (.text:free)
+                  00010fd6    0000008e                            : fs_div.obj (.text)
+                  00011064    00000080                            : fopen.obj (.text:_search_fp)
+                  000110e4    0000007e                            : _io_perm.obj (.text:__TI_wrt_ok)
+                  00011162    0000007e     sensors.obj (.text:set_acc_scale)
+                  000111e0    00000074     rts430x_lc_rd_eabi.lib : trgdrv.obj (.text:HOSTrename)
+                  00011254    00000074     sensors.obj (.text:read_acc)
+                  000112c8    00000070     uart.obj (.text:UART_Init)
+                  00011338    00000070     rts430x_lc_rd_eabi.lib : fclose.obj (.text:__TI_closefile)
+                  000113a8    0000006e                            : trgdrv.obj (.text:HOSTopen)
+                  00011416    0000006e                            : autoinit.obj (.text:_auto_init_hold_wdt)
+                  00011484    0000006c     uart.obj (.text:DEBUG_UART_Print)
+                  000114f0    0000006a     rts430x_lc_rd_eabi.lib : trgdrv.obj (.text:HOSTwrite)
+                  0001155a    0000006a                            : fseek.obj (.text:fseek)
+                  000115c4    00000068                            : trgdrv.obj (.text:HOSTread)
+                  0001162c    00000064                            : fflush.obj (.text:__TI_doflush)
+                  00011690    00000064                            : cvtfd.obj (.text:__mspabi_cvtfd)
+                  000116f4    00000062                            : copy_decompress_rle.obj (.text:__TI_decompress_rle_core)
+                  00011756    00000060     sensors.obj (.text:MPU_Init)
+                  000117b6    0000005a     ble.obj (.text:BLE_setPublicChar)
+                  00011810    0000005a     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.text:_ltostr)
+                  0001186a    0000005a                            : lowlev.obj (.text:close)
+                  000118c4    0000005a                            : lowlev.obj (.text:getdevice)
+                  0001191e    00000058     ble.obj (.text:DEBUG_BLE_Echo_To_Terminal)
+                  00011976    00000050     rts430x_lc_rd_eabi.lib : fprintf.obj (.text:fprintf)
+                  000119c6    0000004c                            : trgdrv.obj (.text:HOSTclose)
+                  00011a12    0000004c                            : _printfi_min.obj (.text:_pproc_diouxp)
+                  00011a5e    0000004a                            : printf.obj (.text:printf)
+                  00011aa8    00000048                            : _printfi_min.obj (.text:_pproc_str)
+                  00011af0    00000046                            : trgdrv.obj (.text:HOSTunlink)
+                  00011b36    00000044                            : vla_alloc.obj (.text:_Z18init_curr_vla_poolv)
+                  00011b7a    00000044                            : vla_alloc.obj (.text:_Z31increase_curr_vla_pool_capacityv)
+                  00011bbe    00000042     ble.obj (.text:BLE_changeNameTo)
+                  00011c00    00000042     rts430x_lc_rd_eabi.lib : memory.obj (.text:minit)
+                  00011c42    00000042     sensors.obj (.text:spi_mpu_mRead)
+                  00011c84    0000003e     rts430x_lc_rd_eabi.lib : _printfi_min.obj (.text:_getarg_diouxp)
+                  00011cc2    0000003e                            : asr32.obj (.text:l_asr_const)
+                  00011d00    0000003e                            : lsl32.obj (.text:l_lsl_const)
+                  00011d3e    0000003e                            : lsr32.obj (.text:l_lsr_const)
+                  00011d7c    0000003e                            : lowlev.obj (.text:lseek)
+                  00011dba    0000003c                            : lowlev.obj (.text:write)
+                  00011df6    0000003a     spi.obj (.text:SPI_Init)
+                  00011e30    00000036     rts430x_lc_rd_eabi.lib : fopen.obj (.text:__TI_cleanup)
+                  00011e66    00000036                            : trgmsg.obj (.text:__TI_writemsg)
+                  00011e9c    00000036                            : fs_itof.obj (.text)
+                  00011ed2    00000032                            : trgmsg.obj (.text:__TI_readmsg)
+                  00011f04    00000032                            : strncpy.obj (.text:strncpy)
+                  00011f36    00000030     fm.obj (.text:collectFMData)
+                  00011f66    00000030     rts430x_lc_rd_eabi.lib : lowlev.obj (.text:unlink)
+                  00011f96    0000002e                            : exit.obj (.text:exit)
+                  00011fc4    0000002e                            : lowlev.obj (.text:finddevice)
+                  00011ff2    0000002c                            : div16s.obj (.text)
+                  0001201e    00000028     main.obj (.text:CLK_Init)
+                  00012046    00000024     rts430x_lc_rd_eabi.lib : copy_zero_init.obj (.text:decompress:ZI:__TI_zero_init)
+                  0001206a    00000024                            : fopen.obj (.text:fopen)
+                  0001208e    00000022                            : fclose.obj (.text:fclose)
+                  000120b0    00000020                            : memccpy.obj (.text:memccpy)
+                  000120d0    0000001c     sensors.obj (.text:spi_mpu_write)
+                  000120ec    0000001c     rts430x_lc_rd_eabi.lib : strcmp.obj (.text:strcmp)
+                  00012108    0000001a                            : _printfi_min.obj (.text:_div)
+                  00012122    0000001a                            : strchr.obj (.text:strchr)
+                  0001213c    00000016     ble.obj (.text:BLE_Init)
+                  00012152    00000016     ble.obj (.text:BLE_startAdvertisement)
+                  00012168    00000016     ble.obj (.text:BLE_turnOff)
+                  0001217e    00000016     ble.obj (.text:BLE_turnOn)
+                  00012194    00000016     rts430x_lc_rd_eabi.lib : memchr.obj (.text:memchr)
+                  000121aa    00000016                            : memset.obj (.text:memset)
+                  000121c0    00000016                            : div16u.obj (.text)
+                  000121d6    00000016                            : mult16_hw.obj (.text)
+                  000121ec    00000016     sensors.obj (.text:spi_exchg)
+                  00012202    00000014     rts430x_lc_rd_eabi.lib : memcpy.obj (.text:memcpy)
+                  00012216    00000014     sensors.obj (.text:spi_mpu_release)
+                  0001222a    00000014     sensors.obj (.text:spi_mpu_select)
+                  0001223e    00000012     rts430x_lc_rd_eabi.lib : copy_decompress_none.obj (.text:decompress:none:__TI_decompress_none)
+                  00012250    00000012                            : strcpy.obj (.text:strcpy)
+                  00012262    0000000e                            : strlen.obj (.text:strlen)
+                  00012270    0000000e     sensors.obj (.text:whoami)
+                  0001227e    00000006     rts430x_lc_rd_eabi.lib : isr_trap.obj (.text:__TI_ISR_TRAP)
+                  00012284    00000006                            : fprintf.obj (.text:_outc)
+                  0001228a    00000006                            : printf.obj (.text:_outc)
+                  00012290    00000006                            : copy_decompress_rle.obj (.text:decompress:rle24:__TI_decompress_rle24)
+                  00012296    00000004                            : error.obj (.text:__abort_execution)
+                  0001229a    00000004                            : fprintf.obj (.text:_outs)
+                  0001229e    00000004                            : printf.obj (.text:_outs)
+                  000122a2    00000004                            : pre_init.obj (.text:_system_pre_init)
+                  000122a6    00000004                            : exit.obj (.text:abort)
+                  000122aa    00000002     i2c.obj (.text:I2C_Init)
+                  000122ac    00000002     rts430x_lc_rd_eabi.lib : _lock.obj (.text:_nop)
 
 
 LINKER GENERATED COPY TABLES
 
-__TI_cinit_table @ 000021dc records: 2, size/record: 8, table size: 16
-	.data: load addr=000021ba, load size=0000000f bytes, run addr=00001240, run size=0000000c bytes, compression=rle
-	.bss: load addr=000021d6, load size=00000006 bytes, run addr=00001100, run size=00000140 bytes, compression=zero_init
+__TI_cinit_table @ 000022f8 records: 3, size/record: 8, table size: 24
+	.data: load addr=0000227c, load size=00000064 bytes, run addr=00001326, run size=0000019e bytes, compression=rle
+	.bss: load addr=000022ec, load size=00000006 bytes, run addr=00001100, run size=00000226 bytes, compression=zero_init
+	.cio: load addr=000022f2, load size=00000006 bytes, run addr=000014c4, run size=00000120 bytes, compression=zero_init
 
 
 LINKER GENERATED HANDLER TABLE
 
-__TI_handler_table @ 000021ca records: 3, size/record: 4, table size: 12
+__TI_handler_table @ 000022e0 records: 3, size/record: 4, table size: 12
 	index: 0, handler: __TI_zero_init
 	index: 1, handler: __TI_decompress_rle24
 	index: 2, handler: __TI_decompress_none
@@ -297,12 +417,14 @@ address    name
 00000057   BCSCTL1
 00000058   BCSCTL2
 00000053   BCSCTL3
-000102e6   BLE_Init
-00010204   BLE_changeNameTo
-000102fc   BLE_startAdvertisement
-00010312   BLE_turnOff
-00010328   BLE_turnOn
-00010374   C$$EXIT
+0001213c   BLE_Init
+00011bbe   BLE_changeNameTo
+000117b6   BLE_setPublicChar
+00012152   BLE_startAdvertisement
+00012168   BLE_turnOff
+0001217e   BLE_turnOn
+000122a6   C$$EXIT
+00011e98   C$$IO$$
 00000059   CACTL1
 0000005a   CACTL2
 000010fb   CALBC1_12MHZ
@@ -314,14 +436,15 @@ address    name
 000010fe   CALDCO_1MHZ
 000010fc   CALDCO_8MHZ
 0000005b   CAPD
-00010280   CLK_Init
+0001201e   CLK_Init
+0000131e   COLS
 000001c0   DAC12_0CTL
 000001c8   DAC12_0DAT
 000001c2   DAC12_1CTL
 000001ca   DAC12_1DAT
 00000056   DCOCTL
-000101ac   DEBUG_BLE_Echo_To_Terminal
-000100de   DEBUG_UART_Print
+0001191e   DEBUG_BLE_Echo_To_Terminal
+00011484   DEBUG_UART_Print
 000001d0   DMA0CTL
 000001d6   DMA0DA
 000001d6   DMA0DAL
@@ -347,13 +470,21 @@ address    name
 0000012a   FCTL2
 0000012c   FCTL3
 000001be   FCTL4
-00010378   I2C_Init
+000119c6   HOSTclose
+00010e1a   HOSTlseek
+000113a8   HOSTopen
+000115c4   HOSTread
+000111e0   HOSTrename
+00011af0   HOSTunlink
+000114f0   HOSTwrite
+000122aa   I2C_Init
 00000000   IE1
 00000001   IE2
 00000002   IFG1
 00000003   IFG2
 00000134   MAC
 00000136   MACS
+00011756   MPU_Init
 00000130   MPY
 00000132   MPYS
 00000138   OP2
@@ -410,7 +541,8 @@ address    name
 0000003e   PASEL
 0000013c   RESHI
 0000013a   RESLO
-00010246   SPI_Init
+0000227a   ROWS
+00011df6   SPI_Init
 0000013e   SUMEXT
 00000055   SVSCTL
 00000172   TACCR0
@@ -444,8 +576,8 @@ address    name
 000010c0   TLV_CHECKSUM
 000010f7   TLV_DCO_30_LEN
 000010f6   TLV_DCO_30_TAG
-0000217a   Timer_A
-00010000   UART_Init
+0000217c   Timer_A
+000112c8   UART_Init
 00000006   UC1IE
 00000007   UC1IFG
 0000005d   UCA0ABCTL
@@ -493,19 +625,27 @@ address    name
 00002100   USCI0RX_ISR
 00002130   USCI1RX_ISR
 00000120   WDTCTL
+000014c4   _CIOBUF_
 00002100   __STACK_END
 00000050   __STACK_SIZE
-000021dc   __TI_CINIT_Base
-000021ec   __TI_CINIT_Limit
-000021ca   __TI_Handler_Table_Base
-000021d6   __TI_Handler_Table_Limit
+00000050   __SYSMEM_SIZE
+000022f8   __TI_CINIT_Base
+00002310   __TI_CINIT_Limit
+000022e0   __TI_Handler_Table_Base
+000022ec   __TI_Handler_Table_Limit
 UNDEFED    __TI_INITARRAY_Base
 UNDEFED    __TI_INITARRAY_Limit
-00010364   __TI_ISR_TRAP
+0001227e   __TI_ISR_TRAP
 00000001   __TI_args_main
-00010352   __TI_decompress_none
-0001036a   __TI_decompress_rle24
+00011e30   __TI_cleanup
+00001306   __TI_cleanup_ptr
+00011338   __TI_closefile
+0001223e   __TI_decompress_none
+00012290   __TI_decompress_rle24
+0001162c   __TI_doflush
+0000130a   __TI_dtors_ptr
 00000001   __TI_exit
+000014be   __TI_ft_end
 0000ffc0   __TI_int00
 0000ffc2   __TI_int01
 0000ffc4   __TI_int02
@@ -537,23 +677,131 @@ UNDEFED    __TI_INITARRAY_Limit
 0000fff8   __TI_int28
 0000fffa   __TI_int29
 0000fffc   __TI_int30
-000102a6   __TI_zero_init
+000109c0   __TI_printfi_minimal
+00011ed2   __TI_readmsg
+00001100   __TI_tmpnams
+00011e66   __TI_writemsg
+000110e4   __TI_wrt_ok
+00012046   __TI_zero_init
+00012296   __abort_execution
 ffffffff   __binit__
 ffffffff   __c_args__
-00010070   _auto_init_hold_wdt
+00011690   __mspabi_cvtfd
+00010fd6   __mspabi_divf
+00011ff2   __mspabi_divi
+000121c0   __mspabi_divu
+00011e9c   __mspabi_fltif
+000121d6   __mspabi_mpyi_hw
+00011ff2   __mspabi_remi
+000121c0   __mspabi_remu
+00011d38   __mspabi_slll_1
+00011d14   __mspabi_slll_10
+00011d10   __mspabi_slll_11
+00011d0c   __mspabi_slll_12
+00011d08   __mspabi_slll_13
+00011d04   __mspabi_slll_14
+00011d00   __mspabi_slll_15
+00011d34   __mspabi_slll_2
+00011d30   __mspabi_slll_3
+00011d2c   __mspabi_slll_4
+00011d28   __mspabi_slll_5
+00011d24   __mspabi_slll_6
+00011d20   __mspabi_slll_7
+00011d1c   __mspabi_slll_8
+00011d18   __mspabi_slll_9
+00011cfa   __mspabi_sral_1
+00011cd6   __mspabi_sral_10
+00011cd2   __mspabi_sral_11
+00011cce   __mspabi_sral_12
+00011cca   __mspabi_sral_13
+00011cc6   __mspabi_sral_14
+00011cc2   __mspabi_sral_15
+00011cf6   __mspabi_sral_2
+00011cf2   __mspabi_sral_3
+00011cee   __mspabi_sral_4
+00011cea   __mspabi_sral_5
+00011ce6   __mspabi_sral_6
+00011ce2   __mspabi_sral_7
+00011cde   __mspabi_sral_8
+00011cda   __mspabi_sral_9
+00011d76   __mspabi_srll_1
+00011d52   __mspabi_srll_10
+00011d4e   __mspabi_srll_11
+00011d4a   __mspabi_srll_12
+00011d46   __mspabi_srll_13
+00011d42   __mspabi_srll_14
+00011d3e   __mspabi_srll_15
+00011d72   __mspabi_srll_2
+00011d6e   __mspabi_srll_3
+00011d6a   __mspabi_srll_4
+00011d66   __mspabi_srll_5
+00011d62   __mspabi_srll_6
+00011d5e   __mspabi_srll_7
+00011d5a   __mspabi_srll_8
+00011d56   __mspabi_srll_9
+00010000   __vla_alloc
+00010a92   __vla_dealloc
+00011416   _auto_init_hold_wdt
 00002160   _c_int00
-00002160   _c_int00_noexit
+00002160   _c_int00_noargs
+00001326   _ftable
+000014aa   _lock
+000122ac   _nop
 0000fffe   _reset_vector
 000020b0   _stack
-00010370   _system_pre_init
-00010374   abort
+000015e4   _sys_memory
+000122a2   _system_pre_init
+000014ae   _unlock
+000122a6   abort
+0000130e   acc_divider
+000012f2   accelerometer_data
 ffffffff   binit
-00001100   data_from_ble
-000011a0   data_from_terminal
-000102ca   main
-0001033e   memcpy
-00001248   terminal_received
-0000124a   terminal_sent
+0001186a   close
+00011f36   collectFMData
+00010d76   collectSensorData
+000014ba   data1
+000011a0   data_from_ble
+00001240   data_from_terminal
+0001040e   dumpToTXT
+00011f96   exit
+0001208e   fclose
+00010710   floatToHex
+0001206a   fopen
+00011976   fprintf
+00010eb8   fputc
+00010620   fputs
+00010f48   free
+0001155a   fseek
+00011d7c   lseek
+000107fe   main
+00010b62   malloc
+000120b0   memccpy
+00012194   memchr
+00012202   memcpy
+000121aa   memset
+00011c00   minit
+00010c1c   open
+00011a5e   printf
+00011254   read_acc
+00010198   realloc
+00011f66   remove
+00011162   set_acc_scale
+000108e0   setvbuf
+000121ec   spi_exchg
+00011c42   spi_mpu_mRead
+00012216   spi_mpu_release
+0001222a   spi_mpu_select
+000120d0   spi_mpu_write
+00012122   strchr
+000120ec   strcmp
+00012250   strcpy
+00012262   strlen
+00011f04   strncpy
+000014b2   terminal_received
+000014b4   terminal_sent
+00011f66   unlink
+00012270   whoami
+00011dba   write
 
 
 GLOBAL SYMBOLS: SORTED BY Symbol Address 
@@ -620,6 +868,7 @@ address    name
 0000003e   PASEL
 0000003f   P8SEL
 00000050   __STACK_SIZE
+00000050   __SYSMEM_SIZE
 00000053   BCSCTL3
 00000055   SVSCTL
 00000056   DCOCTL
@@ -784,21 +1033,35 @@ address    name
 000010fd   CALBC1_8MHZ
 000010fe   CALDCO_1MHZ
 000010ff   CALBC1_1MHZ
-00001100   data_from_ble
-000011a0   data_from_terminal
-00001248   terminal_received
-0000124a   terminal_sent
+00001100   __TI_tmpnams
+000011a0   data_from_ble
+00001240   data_from_terminal
+000012f2   accelerometer_data
+00001306   __TI_cleanup_ptr
+0000130a   __TI_dtors_ptr
+0000130e   acc_divider
+0000131e   COLS
+00001326   _ftable
+000014aa   _lock
+000014ae   _unlock
+000014b2   terminal_received
+000014b4   terminal_sent
+000014ba   data1
+000014be   __TI_ft_end
+000014c4   _CIOBUF_
+000015e4   _sys_memory
 000020b0   _stack
 00002100   USCI0RX_ISR
 00002100   __STACK_END
 00002130   USCI1RX_ISR
 00002160   _c_int00
-00002160   _c_int00_noexit
-0000217a   Timer_A
-000021ca   __TI_Handler_Table_Base
-000021d6   __TI_Handler_Table_Limit
-000021dc   __TI_CINIT_Base
-000021ec   __TI_CINIT_Limit
+00002160   _c_int00_noargs
+0000217c   Timer_A
+0000227a   ROWS
+000022e0   __TI_Handler_Table_Base
+000022ec   __TI_Handler_Table_Limit
+000022f8   __TI_CINIT_Base
+00002310   __TI_CINIT_Limit
 0000ffc0   __TI_int00
 0000ffc2   __TI_int01
 0000ffc4   __TI_int02
@@ -831,31 +1094,144 @@ address    name
 0000fffa   __TI_int29
 0000fffc   __TI_int30
 0000fffe   _reset_vector
-00010000   UART_Init
-00010070   _auto_init_hold_wdt
-000100de   DEBUG_UART_Print
-000101ac   DEBUG_BLE_Echo_To_Terminal
-00010204   BLE_changeNameTo
-00010246   SPI_Init
-00010280   CLK_Init
-000102a6   __TI_zero_init
-000102ca   main
-000102e6   BLE_Init
-000102fc   BLE_startAdvertisement
-00010312   BLE_turnOff
-00010328   BLE_turnOn
-0001033e   memcpy
-00010352   __TI_decompress_none
-00010364   __TI_ISR_TRAP
-0001036a   __TI_decompress_rle24
-00010370   _system_pre_init
-00010374   C$$EXIT
-00010374   abort
-00010378   I2C_Init
+00010000   __vla_alloc
+00010198   realloc
+0001040e   dumpToTXT
+00010620   fputs
+00010710   floatToHex
+000107fe   main
+000108e0   setvbuf
+000109c0   __TI_printfi_minimal
+00010a92   __vla_dealloc
+00010b62   malloc
+00010c1c   open
+00010d76   collectSensorData
+00010e1a   HOSTlseek
+00010eb8   fputc
+00010f48   free
+00010fd6   __mspabi_divf
+000110e4   __TI_wrt_ok
+00011162   set_acc_scale
+000111e0   HOSTrename
+00011254   read_acc
+000112c8   UART_Init
+00011338   __TI_closefile
+000113a8   HOSTopen
+00011416   _auto_init_hold_wdt
+00011484   DEBUG_UART_Print
+000114f0   HOSTwrite
+0001155a   fseek
+000115c4   HOSTread
+0001162c   __TI_doflush
+00011690   __mspabi_cvtfd
+00011756   MPU_Init
+000117b6   BLE_setPublicChar
+0001186a   close
+0001191e   DEBUG_BLE_Echo_To_Terminal
+00011976   fprintf
+000119c6   HOSTclose
+00011a5e   printf
+00011af0   HOSTunlink
+00011bbe   BLE_changeNameTo
+00011c00   minit
+00011c42   spi_mpu_mRead
+00011cc2   __mspabi_sral_15
+00011cc6   __mspabi_sral_14
+00011cca   __mspabi_sral_13
+00011cce   __mspabi_sral_12
+00011cd2   __mspabi_sral_11
+00011cd6   __mspabi_sral_10
+00011cda   __mspabi_sral_9
+00011cde   __mspabi_sral_8
+00011ce2   __mspabi_sral_7
+00011ce6   __mspabi_sral_6
+00011cea   __mspabi_sral_5
+00011cee   __mspabi_sral_4
+00011cf2   __mspabi_sral_3
+00011cf6   __mspabi_sral_2
+00011cfa   __mspabi_sral_1
+00011d00   __mspabi_slll_15
+00011d04   __mspabi_slll_14
+00011d08   __mspabi_slll_13
+00011d0c   __mspabi_slll_12
+00011d10   __mspabi_slll_11
+00011d14   __mspabi_slll_10
+00011d18   __mspabi_slll_9
+00011d1c   __mspabi_slll_8
+00011d20   __mspabi_slll_7
+00011d24   __mspabi_slll_6
+00011d28   __mspabi_slll_5
+00011d2c   __mspabi_slll_4
+00011d30   __mspabi_slll_3
+00011d34   __mspabi_slll_2
+00011d38   __mspabi_slll_1
+00011d3e   __mspabi_srll_15
+00011d42   __mspabi_srll_14
+00011d46   __mspabi_srll_13
+00011d4a   __mspabi_srll_12
+00011d4e   __mspabi_srll_11
+00011d52   __mspabi_srll_10
+00011d56   __mspabi_srll_9
+00011d5a   __mspabi_srll_8
+00011d5e   __mspabi_srll_7
+00011d62   __mspabi_srll_6
+00011d66   __mspabi_srll_5
+00011d6a   __mspabi_srll_4
+00011d6e   __mspabi_srll_3
+00011d72   __mspabi_srll_2
+00011d76   __mspabi_srll_1
+00011d7c   lseek
+00011dba   write
+00011df6   SPI_Init
+00011e30   __TI_cleanup
+00011e66   __TI_writemsg
+00011e98   C$$IO$$
+00011e9c   __mspabi_fltif
+00011ed2   __TI_readmsg
+00011f04   strncpy
+00011f36   collectFMData
+00011f66   remove
+00011f66   unlink
+00011f96   exit
+00011ff2   __mspabi_divi
+00011ff2   __mspabi_remi
+0001201e   CLK_Init
+00012046   __TI_zero_init
+0001206a   fopen
+0001208e   fclose
+000120b0   memccpy
+000120d0   spi_mpu_write
+000120ec   strcmp
+00012122   strchr
+0001213c   BLE_Init
+00012152   BLE_startAdvertisement
+00012168   BLE_turnOff
+0001217e   BLE_turnOn
+00012194   memchr
+000121aa   memset
+000121c0   __mspabi_divu
+000121c0   __mspabi_remu
+000121d6   __mspabi_mpyi_hw
+000121ec   spi_exchg
+00012202   memcpy
+00012216   spi_mpu_release
+0001222a   spi_mpu_select
+0001223e   __TI_decompress_none
+00012250   strcpy
+00012262   strlen
+00012270   whoami
+0001227e   __TI_ISR_TRAP
+00012290   __TI_decompress_rle24
+00012296   __abort_execution
+000122a2   _system_pre_init
+000122a6   C$$EXIT
+000122a6   abort
+000122aa   I2C_Init
+000122ac   _nop
 ffffffff   __binit__
 ffffffff   __c_args__
 ffffffff   binit
 UNDEFED    __TI_INITARRAY_Base
 UNDEFED    __TI_INITARRAY_Limit
 
-[297 symbols]
+[425 symbols]

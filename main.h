@@ -15,5 +15,10 @@
 //general tasks
 void CLK_Init();
 unsigned char* floatToHex(float* val, int byteSize);
+void dumpToTXT(float data[][]);
+
+/* VARIABLES */
+extern const int ROWS;
+extern int COLS;
 
 #endif /* MAIN_H_ */

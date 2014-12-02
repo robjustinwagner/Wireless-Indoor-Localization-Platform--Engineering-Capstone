@@ -12,6 +12,7 @@
 /* INCLUDES */
 #include "gen_lib.h"
 #include "sensors.h"
+#include "main.h"
 #include "uart.h"
 
 /* DEFINITIONS */
@@ -23,7 +24,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 unsigned char data1 = 0;
-static int i = 0;
+static unsigned int i = 0;
 //static int acc_divider = 2048;
 
 uint8_t response[100];
@@ -112,7 +113,7 @@ void MPU_Init(int sample_rate_div, int low_pass_filter){
 	{
 		spi_mpu_write(MPU_Init_Data[i][1], MPU_Init_Data[i][0]);
 		uint8_t j;
-		for(j = 0; j < 20; j++);  //I2C must slow down the write speed, otherwise it won't work
+		for(j = 20; j > 0; j--);  //I2C must slow down the write speed, otherwise it won't work
 	}
 
 	set_acc_scale(BITS_FS_16G); // returns scale
@@ -241,8 +242,8 @@ uint8_t spi_mpu_write(uint8_t addr, unsigned char value){
 	spi_mpu_release(); // CS high
 
 	// wait
-	int j;
-	for(j = 0; j < 50; j++){}
+	unsigned int j;
+	for(j = 50; j > 0; j--);
 
 	return tempData;
 }
@@ -261,8 +262,8 @@ void spi_mpu_read(uint8_t addr){
 	spi_mpu_release(); // ~CS high
 
 	// wait
-	int j;
-	for(j = 0; j < 50; j++){}
+	unsigned int j;
+	for(j = 50; j > 0; j--);
 }
 
 /*
@@ -275,14 +276,15 @@ void spi_mpu_mRead(uint8_t addr, uint8_t* buffer, unsigned int bytes){
 	// READ
 	spi_mpu_select(); // ~CS Low
 	spi_exchg(addr);                     // Transmit address
-	for(i = 0; i < bytes; i++){
+	for(i = 0; i < bytes; i++)
+	{
 		buffer[i] = spi_exchg(0); // dummy byte, used to retrieve READ data
 	}
 	spi_mpu_release(); // ~CS high
 
 	// wait
-	int j;
-	for(j = 0; j < 50; j++){}
+	unsigned int j;
+	for(j = 50; j > 0; j--);
 }
 
 void read_acc()
@@ -290,11 +292,33 @@ void read_acc()
     uint8_t response[6];
     int16_t bit_data;
     float data_temp;
-    spi_mpu_mRead(MPUREG_ACCEL_XOUT_H, response ,6);
-    for(i=0; i<3; i++) {
+    spi_mpu_mRead(MPUREG_ACCEL_XOUT_H, response, 6);
+    for(i = 0; i < 3; i++) {
         bit_data=((int16_t)response[i*2]<<8)|response[i*2+1];
         data_temp=(float)bit_data;
         accelerometer_data[i]=data_temp/acc_divider;
     }
+}
 
+void collectSensorData(float sensorData[ROWS][COLS])
+{
+	int wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
+
+	/* BEGIN MODIFIED VERSION OF read_acc() TO POPULATE sensorData[][] */
+		uint8_t response[6];
+	    int16_t bit_data;
+	    float data_temp;
+
+	    unsigned int r;
+	    unsigned int c;
+	    for(r = 0; r < ROWS; r++) {
+	    	spi_mpu_mRead(MPUREG_ACCEL_XOUT_H, response, 6);
+		    for(c = 0; c < COLS; c++) {
+		        bit_data=((int16_t)response[c*2]<<8)|response[c*2+1];
+		        data_temp=(float)bit_data;
+		        sensorData[r][c]=data_temp/acc_divider;
+		    }
+	    	for(c=wait_time;c>0;c--);	//wait in between samples
+	    }
+	/* END MODIFIED VERSION OF read_acc() */
 }

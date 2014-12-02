@@ -14,6 +14,12 @@
 
 #include <msp430f2619.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+//data sampling
+#define COLLECTION_DURATION 15
+#define SAMPLES_PER_DURATION 10
 
 //boolean type
 typedef int bool;

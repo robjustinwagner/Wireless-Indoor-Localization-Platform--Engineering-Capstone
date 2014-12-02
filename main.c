@@ -25,13 +25,19 @@
 
 
 /* VARIABLES */
-
+static unsigned int j; //for loop index
+static unsigned int aux_j; //inner/auxiliary for loop index
+const static bool COLLECT_SENSOR_DATA = false;
+const static bool COLLECT_FM_DATA = false;
+const int ROWS = COLLECTION_DURATION*SAMPLES_PER_DURATION;
+int COLS;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
-
-	//int i; //for loop index
+	//data matrix setup
+	if(COLLECT_SENSOR_DATA) COLS = 3;
+	else if(COLLECT_FM_DATA) COLS = 6;
 
     WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
 
@@ -47,10 +53,25 @@ int main(void)
 	MPU_Init(0, 0);	//sensors
 	whoami();		//
 
-    while(1)
-    {
-    	read_acc(); // Read Accelerometer Values
-		BLE_setPublicChar("000D", floatToHex(&accelerometer_data[0], 8), 8);
+	if(COLLECT_SENSOR_DATA)
+	{
+		float sensorData[ROWS][COLS];
+		collectSensorData(sensorData);
+		dumpToTXT(sensorData);
+	}
+	else if(COLLECT_FM_DATA)
+	{
+		float fmData[ROWS][COLS];
+		collectFMData(fmData);
+		dumpToTXT(fmData);
+	}
+	else
+	{
+		while(1)	//main loop
+		{
+        	read_acc(); 	// Read Accelerometer Values
+    		BLE_setPublicChar("000D", floatToHex(&accelerometer_data[0], 8), 8);
+    	}
     }
 
 	//return 1;
@@ -58,13 +79,12 @@ int main(void)
 
 void CLK_Init()
 {
-	if (CALBC1_1MHZ==0xFF) while(1); 	// If calibration constant erased, do not load, trap CPU!!
+	if (CALBC1_1MHZ==0xFF) while(1); // If calibration constant erased, do not load, trap CPU!!
 
-	BCSCTL1 = CALBC1_1MHZ;                 		// MCLK at 1MHz
+	BCSCTL1 = CALBC1_1MHZ;           // MCLK at 1MHz
 	DCOCTL = CALDCO_1MHZ;
 
-	int i;
-	for(i=2100;i>0;i--);                      	// Wait for DCO to stabilize.
+	for(j=2100;j>0;j--);             // Wait for DCO to stabilize.
 }
 
 /*
@@ -76,7 +96,6 @@ unsigned char* floatToHex(float* val, int byteSize)
 	unsigned char* hexVal = (unsigned char*) malloc(byteSize);
 	unsigned char* temp = (unsigned char*) val;
 
-	unsigned int j;
 	for(j = 0; j < 8; j++)
 	{
 		if((j % 2) == 0) //0
@@ -107,4 +126,36 @@ unsigned char* floatToHex(float* val, int byteSize)
 	}
 
 	return &hexVal[0];
+}
+
+/*
+ * dumps collected {sensor, fm} data into text file,
+ * one line per data entry,
+ * float values are delimited by a comma
+ * e.g.
+ * 			DATA			==>			TXT
+ * [ ..... 	..... 	..... ]	    ....., ....., .....
+ * [ 3.141  0.415   2.134 ] ==> 3.141, 0.415, 2.134
+ * [ ..... 	..... 	..... ] 	....., ....., .....
+ */
+void dumpToTXT(float data[ROWS][COLS])
+{
+	//open file
+	FILE *f = fopen("data.txt", "w");
+	if (f == NULL)
+	{
+	    printf("Error opening/creating dump file! (data.txt)\n");
+	    exit(1);
+	}
+	//write to file
+	for(j = 0; j < ROWS; j++)
+	{
+		for(aux_j = 0; aux_j < COLS; aux_j++)
+		{
+			if(aux_j = COLS-1) fprintf(f, "%f\n", data[j][aux_j]);
+			else fprintf(f, "%f,", data[j][aux_j]);
+		}
+	}
+
+	fclose(f);	//close file resource
 }
