@@ -302,7 +302,7 @@ void read_acc()
 
 void collectSensorData(float sensorData[ROWS][COLS])
 {
-	int wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
+	const static int wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
 
 	/* BEGIN MODIFIED VERSION OF read_acc() TO POPULATE sensorData[][] */
 		uint8_t response[6];
