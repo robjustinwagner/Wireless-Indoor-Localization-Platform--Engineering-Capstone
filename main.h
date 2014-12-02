@@ -14,5 +14,6 @@
 
 //general tasks
 void CLK_Init();
+unsigned char* floatToHex(float* val, int byteSize);
 
 #endif /* MAIN_H_ */

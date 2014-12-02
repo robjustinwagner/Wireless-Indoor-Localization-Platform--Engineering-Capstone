@@ -34,20 +34,18 @@ void BLE_Init()
 {
 	//BLE startup
 	BLE_turnOff();
-	BLE_turnOn();							//wait for cmd msg to transmit from ble
-	//BLE_toggleEcho();
-	BLE_startAdvertisement();
-	BLE_changeNameTo("WILDevice");
-	BLE_setPublicChar("000D", "00111100", 8);
+	BLE_turnOn();
+
+	//BLE_toggleEcho();							//terminal echo if desired
+	BLE_startAdvertisement();					//begin advertising
+	BLE_changeNameTo("WILDevice");				//change name
 }
 
-
-// (BLE WAKE_SW) P1.6 enable
 void BLE_turnOn()
 {
 	int i;
-	for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
-	P1OUT |= BIT6;
+	for(i=10;i>0;i--); 	// wait for cmd msg to transmit from ble
+	P1OUT |= BIT6; 		// (BLE WAKE_SW) P1.6 enable
 }
 void BLE_turnOff()
 {
@@ -97,7 +95,7 @@ void BLE_changeNameTo(unsigned char *label)
 	}
 	data_from_terminal[index] = 0x0D;		//enter to end cmd
 
-	DEBUG_BLE_Echo_To_Terminal();		//force trigger
+	DEBUG_BLE_Echo_To_Terminal();			//force trigger
 }
 void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charValLength)
 {
@@ -115,14 +113,16 @@ void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charVa
 		charID++;
 		index++;
 	}
-	while(index < (charValLength+8)) { 			// Loop until null char is flagged
+	data_from_terminal[index] = ',';
+	index++;
+	while(index < (charValLength+9)) { 			//Loop until null char is flagged
 		data_from_terminal[index] = *charVal;	//Write the character at the location specified by the pointer
 		charVal++; 								//Increment the TxString pointer to point to the next character
 		index++;								//Increment the data_from_terminal to point to the next empty array index
 	}
 	data_from_terminal[index] = 0x0D;			//enter to end cmd
 
-	DEBUG_BLE_Echo_To_Terminal();		//force trigger
+	DEBUG_BLE_Echo_To_Terminal();				//force trigger
 }
 
 /* EXAMPLE USAGE:
