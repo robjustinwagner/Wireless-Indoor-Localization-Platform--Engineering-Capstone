@@ -15,6 +15,6 @@
 void initFM(); //initialize fm
 
 //fm functions
-void collectFMData(float fmData[][]);
+void collectFMData(float* fmData[]);
 
 #endif /* FM_H_ */

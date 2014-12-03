@@ -15,7 +15,8 @@
 //general tasks
 void CLK_Init();
 unsigned char* floatToHex(float* val, int byteSize);
-void dumpToTXT(float data[][]);
+float** Make2DFloatMatrix(int arraySizeX, int arraySizeY);
+void dumpToTXT(float* data[]);
 
 /* VARIABLES */
 extern const int ROWS;

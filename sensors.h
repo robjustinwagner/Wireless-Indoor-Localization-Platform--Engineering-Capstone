@@ -32,7 +32,7 @@ void SENSORS_Init(); //initialize sensors
 uint8_t spi_mpu_write(uint8_t addr, unsigned char value);
 unsigned int ReadReg( uint8_t WriteAddr, uint8_t WriteData );
 void ReadRegs( uint8_t ReadAddr, uint8_t *ReadBuf, unsigned int Bytes);
-void collectSensorData(float sensorData[][]);
+void collectSensorData(float* sensorData[]);
 // mpu
 void MPU_Init(int sample_rate_div, int low_pass_filter);
 bool init(int sample_rate_div,int low_pass_filter);

@@ -27,9 +27,9 @@ void initFM()
 
 }
 
-void collectFMData(float fmData[ROWS][COLS])
+void collectFMData(float* fmData[])
 {
-	const static int wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
+	const static uint32_t wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
 
 	/* BEGIN MODIFIED VERSION OF read_acc() TO POPULATE fmData[][] */
 		/*

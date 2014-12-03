@@ -13,12 +13,12 @@
 #define GEN_LIB_H_
 
 #include <msp430f2619.h>
-#include <stdint.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include "IQmathlib.h"	//optimized math libraries
+#include "Qmathlib.h"	//
 
 //data sampling
-#define COLLECTION_DURATION 15
+#define COLLECTION_DURATION 1
 #define SAMPLES_PER_DURATION 10
 
 //boolean type

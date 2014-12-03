@@ -300,11 +300,11 @@ void read_acc()
     }
 }
 
-void collectSensorData(float sensorData[ROWS][COLS])
+void collectSensorData(float* sensorData[])
 {
-	const static int wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
+	const static uint32_t wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
 
-	/* BEGIN MODIFIED VERSION OF read_acc() TO POPULATE sensorData[][] */
+	/* BEGIN MODIFIED VERSION OF read_acc() TO POPULATE sensorData[][]
 		uint8_t response[6];
 	    int16_t bit_data;
 	    float data_temp;
@@ -320,5 +320,15 @@ void collectSensorData(float sensorData[ROWS][COLS])
 		    }
 	    	for(c=wait_time;c>0;c--);	//wait in between samples
 	    }
-	/* END MODIFIED VERSION OF read_acc() */
+	 END MODIFIED VERSION OF read_acc() */
+		unsigned int r;
+		    unsigned int c;
+		    for(r = 0; r < ROWS; r++) {
+		    	read_acc();
+			    for(c = 0; c < COLS; c++) {
+			        sensorData[r][c]=accelerometer_data[c];
+			    }
+		    	for(c=wait_time;c>0;c--);	//wait in between samples
+		    }
+
 }
