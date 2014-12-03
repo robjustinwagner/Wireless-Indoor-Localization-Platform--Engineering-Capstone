@@ -12,12 +12,6 @@
 #ifndef BLE_H_
 #define BLE_H_
 
-//variables
-extern unsigned char data_from_terminal[];
-extern unsigned char data_from_ble[];
-extern bool terminal_received;
-extern bool terminal_sent;
-
 //ble init
 void BLE_Init();
 
@@ -25,6 +19,10 @@ void BLE_Init();
 void BLE_turnOn();
 void BLE_turnOff();
 void BLE_toggleEcho();
+void BLE_factoryReset();
+void BLE_enableServices();
+void BLE_enableAutoAdvert();
+void BLE_Reboot();
 void BLE_startAdvertisement();
 void BLE_stopAdvertisement();
 void BLE_changeNameTo(unsigned char *label);
