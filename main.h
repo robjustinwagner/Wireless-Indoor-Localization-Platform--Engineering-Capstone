@@ -13,7 +13,7 @@
 #define MAIN_H_
 
 //general tasks
-void CLK_Init();
+void General_Init();
 unsigned char* floatToHex(float* val, int byteSize);
 float** Make2DFloatMatrix(int arraySizeX, int arraySizeY);
 void dumpToTXT(float* data[]);

@@ -300,7 +300,7 @@ void read_acc()
     }
 }
 
-void collectSensorData(float* sensorData[])
+void SENSORS_CollectData(float* sensorData[])
 {
 	const static uint32_t wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
 

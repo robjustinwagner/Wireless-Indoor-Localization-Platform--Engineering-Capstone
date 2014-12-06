@@ -26,11 +26,9 @@
 
 /* VARIABLES */
 static unsigned int j; //for loop index
+
 static unsigned char* hexVal;
 
-const static bool DEBUG_MODE = false;
-const static bool COLLECT_SENSOR_DATA = false;
-const static bool COLLECT_FM_DATA = false;
 const int ROWS = COLLECTION_DURATION*SAMPLES_PER_DURATION;
 int COLS;
 
@@ -41,41 +39,51 @@ int DEMO_MODE = 0;
  *			2 - RESERVED
  *			3 - RESERVED
  */
-const static float x_threshold = 1.25;
-const static float y_threshold = 1.25;
-const static float z_threshold = 3.25;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
-	WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
+	/* LOCAL VARIABLES */
+	const static bool DEBUG_MODE = false;
+	const static bool COLLECT_SENSOR_DATA = false;
+	const static bool COLLECT_FM_DATA = false;
+
+	hexVal = (unsigned char*) malloc(20);
+	const static float x_threshold = 1.25;
+	const static float y_threshold = 1.25;
+	const static float z_threshold = 3.25;
 
 	// data-matrix setup
 	if(COLLECT_SENSOR_DATA == 1) COLS = 3;
 	else if(COLLECT_FM_DATA == 1) COLS = 6;
 
-	/* INITALIZATION ROUTINES */
-	CLK_Init();		//initalize CLK
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
+
+	/* INITALIZATION ROUTINES */
+	General_Init();	//initalize CLK & all ports (to minimize wasted current consumption)
 	UART_Init();	//initalize UART for serial debug interface & BLE
 	SPI_Init();		//initalize SPI for eeprom & sensors
 	I2C_Init();		//initalize I2C for FM receivers
+	BLE_Init();		/*********************** COMMENT THIS OUT WHEN WE SWITCH TO INIT ROUTIENE ****************************/
+  //FM_Init();
+	MPU_Init(0, 0);	//sensors
+	Auxiliary_Init();
 
-
+	/* BEGIN SPECIAL MODES */
 	if(DEBUG_MODE)
 	{
-		BLE_Init();		//ble
-
+		BLE_Init();
 		while(1)
 		{
 			DEBUG_BLE_Echo_To_Terminal();
 		}
 	}
-
 	if(COLLECT_SENSOR_DATA)
 	{
 		float** sensorData = Make2DFloatMatrix(ROWS, COLS);
-		collectSensorData(sensorData);
+		SENSORS_CollectData(sensorData);
 		dumpToTXT(sensorData);
 		for (j = 0; j < ROWS; j++) free(sensorData[j]); //free memory
 		free(sensorData);							   //
@@ -83,18 +91,14 @@ int main(void)
 	if(COLLECT_FM_DATA)
 	{
 		float** fmData = Make2DFloatMatrix(ROWS, COLS);
-		collectFMData(fmData);
+		FM_CollectData(fmData);
 		dumpToTXT(fmData);
 		for (j = 0; j < ROWS; j++) free(fmData[j]); //free memory
-		free(fmData);								//
+		free(fmData);							   //
 	}
+	/* END SPECIAL MODES */
 
-
-	BLE_Init();		/*********************** COMMENT THIS OUT WHEN WE SWITCH TO INIT ROUTIENE ****************************/
-	MPU_Init(0, 0);	//sensors
-	hexVal = (unsigned char*) malloc(20);
-	Auxiliary_Init();
-
+	/* BEGIN MAIN LOOP */
 	while(1)
 	{
 		//Targeted Fall Detection & Emergency Response System	(TEDERS)
@@ -111,22 +115,29 @@ int main(void)
 			if(accelerometer_data[2] > z_threshold) numThresholdsHit++;
 			if(numThresholdsHit >= 2)
 			{
+
 				/* UNCOMMENT THESE LINES */
-				/* Send FM Values */
-				//read_fm();
+				/*
+				FM_Read();		//Send FM Values
 
-				//BLE_turnOn();		//wake up, initialize ble
+				BLE_Init();		//wake up, initialize ble
 
-				//BLE_setPublicChar("2A37", floatToHex(&fm_data[0], 8), 8, "0A");
-				//BLE_setPublicChar("2A37", floatToHex(&fm_data[1], 8), 8, "0B");
-				//BLE_setPublicChar("2A37", floatToHex(&fm_data[2], 8), 8, "0C");
+				BLE_setPublicChar("2A37", floatToHex(&fm_data[0], 8), 8, "0A");
+				BLE_setPublicChar("2A37", floatToHex(&fm_data[1], 8), 8, "0B");
+				BLE_setPublicChar("2A37", floatToHex(&fm_data[2], 8), 8, "0C");
 
-				//BLE_turnOff();	//turn off ble to optimize battery life
+				BLE_turnOff();	//turn off ble to optimize battery life
+				*/
+				/*************************/
+
 
 				/* COMMENT THESE LINES */
+
 				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[0], 8), 8, "0A");
 				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[1], 8), 8, "0B");
 				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[2], 8), 8, "0C");
+
+				/***********************/
 
 			}
 
@@ -136,34 +147,29 @@ int main(void)
 		if(DEMO_MODE == 1)
 		{
 
-			int numThresholdsHit = 0;
+			/* UNCOMMENT THESE LINES */
+			/*
+			static bool BleON = false;
 
-			read_acc(); 	// Read Accelerometer Values
+			FM_Read(); 	// Read Accelerometer Values
 
-			// **FALL DETECTED IF 2/3 thresholds met**
-			if(accelerometer_data[0] > x_threshold) numThresholdsHit++;
-			if(accelerometer_data[1] > y_threshold) numThresholdsHit++;
-			if(accelerometer_data[2] > z_threshold) numThresholdsHit++;
-			if(numThresholdsHit >= 2)
-			{
-				/* UNCOMMENT THESE LINES */
-				/* Send FM Values */
-				//read_fm();
+			if(!BleON) BLE_Init();		//wake up, initialize ble
+			BleON = true;
 
-				//BLE_turnOn();		//wake up, initialize ble
+			BLE_setPublicChar("2A37", floatToHex(&fm_data[0], 8), 8, "0A");
+			BLE_setPublicChar("2A37", floatToHex(&fm_data[1], 8), 8, "0B");
+			BLE_setPublicChar("2A37", floatToHex(&fm_data[2], 8), 8, "0C");
+			*/
+			/*************************/
 
-				//BLE_setPublicChar("2A37", floatToHex(&fm_data[0], 8), 8, "0A");
-				//BLE_setPublicChar("2A37", floatToHex(&fm_data[1], 8), 8, "0B");
-				//BLE_setPublicChar("2A37", floatToHex(&fm_data[2], 8), 8, "0C");
 
-				//BLE_turnOff();	//turn off ble to optimize battery life
+			/* COMMENT THESE LINES */
 
-				/* COMMENT THESE LINES */
-				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[0], 8), 8, "0A");
-				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[1], 8), 8, "0B");
-				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[2], 8), 8, "0C");
+			BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[0], 8), 8, "0A");
+			BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[1], 8), 8, "0B");
+			BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[2], 8), 8, "0C");
 
-			}
+			/***********************/
 
 		}
 
@@ -181,11 +187,11 @@ int main(void)
 
 	}
 
-	free(hexVal);
-	return 1;
+	//free(hexVal);
+	//return 1;
 }
 
-void CLK_Init()
+void General_Init()
 {
 	if (CALBC1_1MHZ==0xFF) while(1); // If calibration constant erased, do not load, trap CPU!!
 
@@ -193,6 +199,27 @@ void CLK_Init()
 	DCOCTL = CALDCO_1MHZ;
 
 	for(j=2100;j>0;j--);             // Wait for DCO to stabilize.
+
+	//initialize all ports first ot minimize wasted current consumption
+	P1DIR = 0xFF;
+	P1OUT = 0x00;
+	P2DIR = 0xFF;
+	P2OUT = 0x00;
+	P3DIR = 0xFF;
+	P3OUT = 0x00;
+	P4DIR = 0xFF;
+	P4OUT = 0x00;
+	P5DIR = 0xFF;
+	P5OUT = 0x00;
+	P6DIR = 0xFF;
+	P6OUT = 0x00;
+	P7DIR = 0xFF;
+	P7OUT = 0x00;
+	P8DIR = 0xFF;
+	P8OUT = 0x00;
+	PADIR = 0xFF;
+	PAOUT = 0x00;
+
 }
 
 /*

@@ -35,6 +35,7 @@ void BLE_Init()
 {
 	//BLE startup
 	BLE_turnOn();							//wait for cmd msg to transmit from ble
+	//BLE_changeNameTo("WILDevice");
 
 	/*
 	 * SF, 1 --> Reset RN4020
@@ -45,28 +46,21 @@ void BLE_Init()
 
 	//BLE_toggleEcho();
 	BLE_startAdvertisement();
-	//BLE_changeNameTo("WILDevice");
-	//BLE_enableServices();
 	//BLE_enableAutoAdvert();
+	//BLE_enableServices();
 	//BLE_Reboot();
 	//BLE_listServices();
-
 }
-
 
 // (BLE WAKE_SW) P1.6 enable
 void BLE_turnOn()
 {
-	//int i;
-	//for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
 	P1OUT |= BIT6;
 
 	DEBUG_BLE_Echo_To_Terminal();
 }
 void BLE_turnOff()
 {
-	//int i;
-	//for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
 	P1OUT &= ~BIT6;
 }
 void BLE_toggleEcho()
@@ -92,7 +86,7 @@ void BLE_factoryReset()
 	data_from_terminal[0] = 'S';	//command (SF)
 	data_from_terminal[1] = 'F';
 	data_from_terminal[2] = ',';
-	data_from_terminal[3] = '1';	// factory reset
+	data_from_terminal[3] = '1';
 	data_from_terminal[4] = 0x0D;
 
 	DEBUG_BLE_Echo_To_Terminal();	//force trigger
@@ -103,7 +97,7 @@ void BLE_enableServices()
 	data_from_terminal[0] = 'S';	//command (SS)
 	data_from_terminal[1] = 'S';
 	data_from_terminal[2] = ',';
-	data_from_terminal[3] = '2';	// Enable standard gatt services
+	data_from_terminal[3] = '2';	//enable gatt services
 	data_from_terminal[4] = '0';
 	data_from_terminal[5] = '0';
 	data_from_terminal[6] = '0';
@@ -118,10 +112,10 @@ void BLE_enableServices()
 void BLE_enableAutoAdvert()
 {
 	terminal_sent = true;
-	data_from_terminal[0] = 'S';	//command (SS)
+	data_from_terminal[0] = 'S';
 	data_from_terminal[1] = 'R';
 	data_from_terminal[2] = ',';
-	data_from_terminal[3] = 0x20;	// Enable standard gatt services
+	data_from_terminal[3] = 0x20;
 	data_from_terminal[4] = 0x00;
 	data_from_terminal[5] = 0x00;
 	data_from_terminal[6] = 0x00;
@@ -133,8 +127,8 @@ void BLE_Reboot()
 	terminal_sent = true;
 	data_from_terminal[0] = 'R';	//command (SF)
 	data_from_terminal[1] = ',';
-	data_from_terminal[2] = '1';	// factory reset
-	data_from_terminal[3] = 0x0D;	// factory reset
+	data_from_terminal[2] = '1';
+	data_from_terminal[3] = 0x0D;
 
 	DEBUG_BLE_Echo_To_Terminal();	//force trigger
 }
@@ -164,7 +158,7 @@ void BLE_changeNameTo(unsigned char *label)
 
 	bool print = true;
 	unsigned int index = 3;
-	while(print) { 							// Loop until null char is flagged
+	while(print) { 							//Loop until null char is flagged
 		data_from_terminal[index] = *label;	//Write the character at the location specified by the pointer
 		label++; 							//Increment the TxString pointer to point to the next character
 		index++;							//Increment the data_from_terminal to point to the next empty array index
@@ -172,7 +166,7 @@ void BLE_changeNameTo(unsigned char *label)
 	}
 	data_from_terminal[index] = 0x0D;		//enter to end cmd
 
-	DEBUG_BLE_Echo_To_Terminal();		//force trigger
+	DEBUG_BLE_Echo_To_Terminal();			//force trigger
 }
 void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charValLength, unsigned char* type)
 {
@@ -193,7 +187,7 @@ void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charVa
 	data_from_terminal[index] = ',';
 	index++;
 
-	while(index < (charValLength+9)) { 			// Loop until null char is flagged
+	while(index < (charValLength+9)) { 			//Loop until null char is flagged
 		data_from_terminal[index] = *charVal;	//Write the character at the location specified by the pointer
 		charVal++; 								//Increment the TxString pointer to point to the next character
 		index++;								//Increment the data_from_terminal to point to the next empty array index
@@ -201,16 +195,16 @@ void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charVa
 
 	// Defines Type of Data transmitted
 	if(type != 0x00){
-		data_from_terminal[index] = *type; // Set type of cmd (MPU-x, MPU-y, etc.)
+		data_from_terminal[index] = *type; 		// Set type of cmd (MPU-x, MPU-y, etc.)
 		index++;
 		type++;
-		data_from_terminal[index] = *type; // Set type of cmd (MPU-x, MPU-y, etc.)
+		data_from_terminal[index] = *type; 		// Set type of cmd (MPU-x, MPU-y, etc.)
 		index++;
 		type++;
 	}
 	data_from_terminal[index] = 0x0D;			//enter to end cmd
 
-	DEBUG_BLE_Echo_To_Terminal();		//force trigger
+	DEBUG_BLE_Echo_To_Terminal();				//force trigger
 }
 
 /* EXAMPLE USAGE:
@@ -220,13 +214,7 @@ void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charVa
  */
 void DEBUG_BLE_Echo_To_Terminal()
 {
-	//int j;
-	//for(j = 10000; j > 0; j--);
-	//DEBUG_UART_Print("Starting BLE Communication: ", "here", false);
-	//__bis_SR_register(LPM4_bits + GIE);            // sleep, leave interrupts on
 
-	//while(1)
-	//{
 	if(terminal_sent)
 	{
 		terminal_sent = false;
@@ -246,19 +234,7 @@ void DEBUG_BLE_Echo_To_Terminal()
 		{
 			terminal_received = false;
 			DEBUG_UART_Print("Terminal received from BLE: ", &data_from_ble[0], false);
-			/*
-				unsigned int index = 0;
-				while(data_from_ble[index] != 0x0D)
-				{
-					while(!(UC1IFG & UCA1TXIFG)); //wait for last transmit
-					UCA1TXBUF = data_from_ble[index];
-					index++;
-				}
-				while(!(UC1IFG & UCA1TXIFG)); //wait for last transmit
-				UCA1TXBUF = data_from_ble[index];
-			 */
 		}
 	}
-	//}
 
 }

@@ -12,9 +12,12 @@
 #ifndef FM_H_
 #define FM_H_
 
-void initFM(); //initialize fm
+/* VARIABLES */
+
+void FM_Init(); //initialize fm
 
 //fm functions
-void collectFMData(float* fmData[]);
+void FM_Read();
+void FM_CollectData(float* fmData[]);
 
 #endif /* FM_H_ */

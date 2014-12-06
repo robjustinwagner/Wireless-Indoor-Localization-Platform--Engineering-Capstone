@@ -22,12 +22,17 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-void initFM()
+void FM_Init()
 {
 
 }
 
-void collectFMData(float* fmData[])
+void FM_Read()
+{
+
+}
+
+void FM_CollectData(float* fmData[])
 {
 	const static uint32_t wait_time = 1000000/SAMPLES_PER_DURATION;	// 1MHz CLK
 
