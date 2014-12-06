@@ -41,11 +41,11 @@ void UART_Init()
 	UCA1MCTL = 6; 						  			// Modulation UCBRSx = 6
 
 	//UART A0
-	UC0IFG   &= ~(UCA0TXIFG | UCA0RXIFG);          	// clear possible pending interrupts
-	UC0IE	 &= ~UCA0TXIE;
+	//UC0IFG   &= ~(UCA0TXIFG | UCA0RXIFG);          	// clear possible pending interrupts
+	//UC0IE	 &= ~UCA0TXIE;
 	//UART A1
-	UC1IFG   &= ~(UCA1TXIFG | UCA1RXIFG);          	// clear possible pending interrupts
-	UC1IE	 &= ~UCA1TXIE;
+	//UC1IFG   &= ~(UCA1TXIFG | UCA1RXIFG);          	// clear possible pending interrupts
+	//UC1IE	 &= ~UCA1TXIE;
 
 	UCA0CTL1 &= ~UCSWRST;                          	// Initialize USCI state machine
 	UCA1CTL1 &= ~UCSWRST;                          	// Initialize USCI state machine

@@ -26,14 +26,16 @@ unsigned char data_from_terminal[8*20];
 unsigned char data_from_ble[8*20];
 bool terminal_received = false;
 bool terminal_sent = false;
-unsigned char data;
+bool sendData = false;
+unsigned char data2;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 void BLE_Init()
 {
 	//BLE startup
-	BLE_turnOff();
+	//BLE_stopAdvertisement();
+	//BLE_turnOff();
 	BLE_turnOn();							//wait for cmd msg to transmit from ble
 
 	/*
@@ -42,16 +44,23 @@ void BLE_Init()
 	 * SR,20000000 --> Auto Advertise
 	 * R,1 --> Reboot
 	 */
-	/*BLE_factoryReset();
+	/*
 	BLE_enableServices();
 	BLE_enableAutoAdvert();
-	BLE_Reboot();*/
+	BLE_Reboot();
+	long i;
+	for(i = 0; i < 1000; i++);*/
+
+
+	//BLE_Reboot();
+	//int i;
+//	for(i = 0; i < 10000; i++);
 
 	//BLE_toggleEcho();
 	BLE_startAdvertisement();
-	BLE_changeNameTo("WILDevice");
-	BLE_setPublicChar("000D", "00111100", 8, 0x00);
+	//BLE_changeNameTo("WILDevice");
 	//BLE_enableServices();
+	//BLE_Reboot();
 	//BLE_listServices();
 
 }
@@ -60,14 +69,16 @@ void BLE_Init()
 // (BLE WAKE_SW) P1.6 enable
 void BLE_turnOn()
 {
-	int i;
-	for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
+	//int i;
+	//for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
 	P1OUT |= BIT6;
+
+	DEBUG_BLE_Echo_To_Terminal();
 }
 void BLE_turnOff()
 {
-	int i;
-	for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
+	//int i;
+	//for(i=10;i>0;i--); //wait for cmd msg to transmit from ble
 	P1OUT &= ~BIT6;
 }
 void BLE_toggleEcho()
@@ -104,7 +115,7 @@ void BLE_enableServices()
 	data_from_terminal[0] = 'S';	//command (SS)
 	data_from_terminal[1] = 'S';
 	data_from_terminal[2] = ',';
-	data_from_terminal[3] = 'F';	// Enable standard gatt services
+	data_from_terminal[3] = '2';	// Enable standard gatt services
 	data_from_terminal[4] = '0';
 	data_from_terminal[5] = '0';
 	data_from_terminal[6] = '0';
@@ -180,7 +191,7 @@ void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charVa
 	terminal_sent = true;
 
 	data_from_terminal[0] = 'S';
-	data_from_terminal[1] = 'H';
+	data_from_terminal[1] = 'U';
 	data_from_terminal[2] = 'W';
 	data_from_terminal[3] = ',';
 
@@ -221,6 +232,8 @@ void BLE_setPublicChar(unsigned char *charID, unsigned char *charVal, int charVa
  */
 void DEBUG_BLE_Echo_To_Terminal()
 {
+	//int j;
+	//for(j = 10000; j > 0; j--);
 	//DEBUG_UART_Print("Starting BLE Communication: ", "here", false);
 	//__bis_SR_register(LPM4_bits + GIE);            // sleep, leave interrupts on
 

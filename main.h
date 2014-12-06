@@ -19,6 +19,7 @@ float** Make2DFloatMatrix(int arraySizeX, int arraySizeY);
 void dumpToTXT(float* data[]);
 
 /* VARIABLES */
+extern int DEMO_MODE;
 extern const int ROWS;
 extern int COLS;
 

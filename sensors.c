@@ -26,7 +26,7 @@
 unsigned char data1 = 0;
 static unsigned int i = 0;
 //static int acc_divider = 2048;
-
+float acc_divider;
 uint8_t response[100];
 float accelerometer_data[3];
 

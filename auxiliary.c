@@ -20,12 +20,12 @@
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
-int aux_Crap(void) {
-	WDTCTL = WDTPW | WDTHOLD;		// Stop watchdog timer
+void Timer_Init(void)
+{
 
 	CCTL0 = CCIE;                             // CCR0 interrupt enabled
 	TACTL = TASSEL_2 + MC_1 + ID_3;           // SMCLK/8, upmode
-	CCR0 =  10000;                     // 12.5 Hz
+	CCR0 =  65000;                     // 12.5 Hz
 
 	P6OUT &= 0x00;
 	P6DIR |= (BIT5 | BIT6);					// Set P1.0 to output direction
@@ -45,14 +45,14 @@ int aux_Crap(void) {
 	P4IFG &= ~BIT6; // P4.6 IFG cleared
 	*/
 	//_BIS_SR(CPUOFF + LPM4 + GIE); // Enter LPM4 w/interrupt
-	__enable_interrupt();
+	//__enable_interrupt();
 
 
-
-
-	for(;;){
 
 /*
+	for(;;)
+	{
+
 		switch(P4OUT & BIT6) {
 			case BIT6: // dec: 2^6 = 64
 				P6OUT ^= (BIT5 | BIT6); // P1.0 = toggle
@@ -61,9 +61,9 @@ int aux_Crap(void) {
 			default:
 				break;
 			}
-*/
-	}
 
+	}
+*/
 	//return 1;
 }
 

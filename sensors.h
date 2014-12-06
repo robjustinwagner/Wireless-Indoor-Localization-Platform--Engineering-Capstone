@@ -14,7 +14,7 @@
 
 /* VARIABLES */
 extern float accelerometer_data[];
-float acc_divider;
+extern float acc_divider;
 /*float gyro_divider;
 
 int calib_data[3];

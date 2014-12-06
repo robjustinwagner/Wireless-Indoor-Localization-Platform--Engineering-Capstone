@@ -25,6 +25,7 @@ __interrupt void Timer_A (void)
 {
 	//FROM Auxiliary.c
 	P6OUT ^= BIT5;                            // Toggle P1.0
+	//sendData = true;	//ble transmit
 }
 
 // Echo back RXed character, confirm TX buffer is ready first
@@ -47,6 +48,22 @@ __interrupt void USCI1RX_ISR(void)
 
 }
 
+#pragma vector=USCIAB1TX_VECTOR
+__interrupt void USCI1TX_ISR(void)
+{
+  /*
+  unsigned char blah2 = 0x00;
+  UCA1TXBUF = blah2;
+  */
+}
+#pragma vector=USCIAB0TX_VECTOR
+__interrupt void USCI0TX_ISR(void)
+{
+  /*
+  unsigned char blah = 0x00;
+  UCA0TXBUF = blah;
+  */
+}
 
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void)

@@ -27,23 +27,33 @@
 /* VARIABLES */
 static unsigned int j; //for loop index
 static unsigned int aux_j; //inner/auxiliary for loop index
+static unsigned char* hexVal;
 
-const static bool COLLECT_SENSOR_DATA = true;
+const static bool DEBUG_MODE = false;
+const static bool COLLECT_SENSOR_DATA = false;
 const static bool COLLECT_FM_DATA = false;
 const int ROWS = COLLECTION_DURATION*SAMPLES_PER_DURATION;
 int COLS;
 
-// static float x_threshold = 0.5;
-//const static float y_threshold = 0.5;
+const static int DEMO_MODE = 1;
+/* DEMO MODES:
+ *			1 - Targeted Fall Detection & Emergency Response System	(TEDERS)
+ *			2 - Indoor Mapping (IM)
+ *			3 - RESERVED
+ *			4 - RESERVED
+ */
+const static float x_threshold = 1.25;
+const static float y_threshold = 1.25;
+const static float z_threshold = 3.25;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 int main(void)
 {
+	WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
+
 	// data-matrix setup
 	if(COLLECT_SENSOR_DATA == 1) COLS = 3;
 	else if(COLLECT_FM_DATA == 1) COLS = 6;
-
-	WDTCTL = WDTPW | WDTHOLD;	// Stop watchdog timer
 
 	/* INITALIZATION ROUTINES */
 	CLK_Init();		//initalize CLK
@@ -52,10 +62,18 @@ int main(void)
 	SPI_Init();		//initalize SPI for eeprom & sensors
 	I2C_Init();		//initalize I2C for FM receivers
 
-	BLE_turnOff();
 
-	MPU_Init(0, 0);	//sensors
-	//whoami();		//
+	if(DEBUG_MODE)
+	{
+		//BLE_turnOff();
+		//BLE_turnOn();
+		BLE_Init();		//ble
+
+		while(1)
+		{
+			DEBUG_BLE_Echo_To_Terminal();
+		}
+	}
 
 	if(COLLECT_SENSOR_DATA)
 	{
@@ -65,7 +83,7 @@ int main(void)
 		for (j = 0; j < ROWS; j++) free(sensorData[j]); //free memory
 		free(sensorData);							   //
 	}
-	else if(COLLECT_FM_DATA)
+	if(COLLECT_FM_DATA)
 	{
 		float** fmData = Make2DFloatMatrix(ROWS, COLS);
 		collectFMData(fmData);
@@ -73,46 +91,97 @@ int main(void)
 		for (j = 0; j < ROWS; j++) free(fmData[j]); //free memory
 		free(fmData);								//
 	}
-	else
+
+
+	BLE_Init();		/*********************** COMMENT THIS OUT WHEN WE SWITCH TO INIT ROUTIENE ****************************/
+	MPU_Init(0, 0);	//sensors
+	hexVal = (unsigned char*) malloc(20);
+	Timer_Init();
+
+	while(1)
 	{
-
-		BLE_Init();		//ble
-
-		while(1)	//main loop
+		//Targeted Fall Detection & Emergency Response System	(TEDERS)
+		if(DEMO_MODE == 1)
 		{
+
+			int numThresholdsHit = 0;
+
 			read_acc(); 	// Read Accelerometer Values
-			for(j = 5000; j > 0; j--);
-			//BLE_listServices();
-			//unsigned char* temp = &accelerometer_data[0];
 
-			/* Send X,Y,& Z MPU Values (for loop used to space data being sent from BLE) */
-			BLE_setPublicChar("0018", floatToHex(&accelerometer_data[0], 8), 8, "0A");
-			for(j = 5000; j > 0; j--);
-			BLE_setPublicChar("0018", floatToHex(&accelerometer_data[1], 8), 8, "0B");
-			for(j = 5000; j > 0; j--);
-			BLE_setPublicChar("0018", floatToHex(&accelerometer_data[2], 8), 8, "0C");
-			for(j = 5000; j > 0; j--);
+			// **FALL DETECTED IF 2/3 thresholds met**
+			if(accelerometer_data[0] > x_threshold) numThresholdsHit++;
+			if(accelerometer_data[1] > y_threshold) numThresholdsHit++;
+			if(accelerometer_data[2] > z_threshold) numThresholdsHit++;
+			if(numThresholdsHit >= 2)
+			{
+				/* UNCOMMENT THESE LINES */
+				/* Send FM Values */
+				//read_fm();
 
-			/*
-			 ****************TARGETED FALL DETECTION ROUTIENE**************
-			 *
-			 * REMOVE "BLE_INIT(); from main init routiene
-			 *
-			 *
-			 * read_acc();	//constantly read accelerometer values
-			 * if(accelerometer_data[0] > x_threshold && accelerometer_data[2] > z_threshold)	// **FALL DETECTED**
-			 * {
-			 *  read_fm();
-			 *	BLE_Init();		//wake up, initialize ble
-			 *	BLE_setPublicChar("000D", floatToHex(&fm_data[0], 8), 8);
-			 *	BLE_turnOff();	//turn off ble to optimize battery life
-			 * }
-			 *
-			 */
+				//BLE_turnOn();		//wake up, initialize ble
+
+				//BLE_setPublicChar("2A37", floatToHex(&fm_data[0], 8), 8, "0A");
+				//BLE_setPublicChar("2A37", floatToHex(&fm_data[1], 8), 8, "0B");
+				//BLE_setPublicChar("2A37", floatToHex(&fm_data[2], 8), 8, "0C");
+
+				//BLE_turnOff();	//turn off ble to optimize battery life
+
+				/* COMMENT THESE LINES */
+				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[0], 8), 8, "0A");
+				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[1], 8), 8, "0B");
+				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[2], 8), 8, "0C");
+
+			}
+
 		}
+
+		//Indoor Mapping (IM)
+		if(DEMO_MODE == 2)
+		{
+
+			int numThresholdsHit = 0;
+
+			read_acc(); 	// Read Accelerometer Values
+
+			// **FALL DETECTED IF 2/3 thresholds met**
+			if(accelerometer_data[0] > x_threshold) numThresholdsHit++;
+			if(accelerometer_data[1] > y_threshold) numThresholdsHit++;
+			if(accelerometer_data[2] > z_threshold) numThresholdsHit++;
+			if(numThresholdsHit >= 2)
+			{
+				/* UNCOMMENT THESE LINES */
+				/* Send FM Values */
+				//read_fm();
+
+				//BLE_turnOn();		//wake up, initialize ble
+
+				//BLE_setPublicChar("2A37", floatToHex(&fm_data[0], 8), 8, "0A");
+				//BLE_setPublicChar("2A37", floatToHex(&fm_data[1], 8), 8, "0B");
+				//BLE_setPublicChar("2A37", floatToHex(&fm_data[2], 8), 8, "0C");
+
+				//BLE_turnOff();	//turn off ble to optimize battery life
+
+				/* COMMENT THESE LINES */
+				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[0], 8), 8, "0A");
+				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[1], 8), 8, "0B");
+				BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[2], 8), 8, "0C");
+
+			}
+
+		}
+
+		//RESERVED
+		if(DEMO_MODE == 3)
+		{}
+
+		//RESERVED
+		if(DEMO_MODE == 4)
+		{}
+
 	}
 
-	//return 1;
+	free(hexVal);
+	return 1;
 }
 
 void CLK_Init()
@@ -131,7 +200,6 @@ void CLK_Init()
  */
 unsigned char* floatToHex(float* val, int byteSize)
 {
-	unsigned char* hexVal = (unsigned char*) malloc(byteSize);
 	unsigned char* temp = (unsigned char*) val;
 
 	for(j = 0; j < 8; j++)
@@ -190,7 +258,8 @@ float** Make2DFloatMatrix(int arraySizeX, int arraySizeY)
 // I BELIEVE THIS CANT BE DONE ON THE DEVICE
 void dumpToTXT(float* data[])
 {
-	//open file
+	/*
+    //open file
 	FILE *f = fopen("data.txt", "w");
 	if (f == NULL)
 	{
@@ -211,4 +280,5 @@ void dumpToTXT(float* data[])
 	}
 
 	fclose(f);	//close file resource
+	 */
 }
