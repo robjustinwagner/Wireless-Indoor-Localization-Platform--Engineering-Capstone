@@ -23,7 +23,6 @@
 
 /* DEFINITIONS */
 
-
 /* VARIABLES */
 static unsigned int j; //for loop index
 
@@ -165,9 +164,10 @@ int main(void)
 
 			/* COMMENT THESE LINES */
 
-			BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[0], 8), 8, "0A");
-			BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[1], 8), 8, "0B");
-			BLE_setPublicChar("2A37", floatToHex(&accelerometer_data[2], 8), 8, "0C");
+			BLE_setPublicChar("2A37", "MODE: 1-", 8, "0A");
+			BLE_setPublicChar("2A37", "Indoor", 8, "0B");
+			BLE_setPublicChar("2A37", "Mapping", 8, "0B");
+			BLE_setPublicChar("2A37", "(IM)", 8, "0B");
 
 			/***********************/
 
@@ -175,11 +175,25 @@ int main(void)
 
 		//RESERVED
 		if(DEMO_MODE == 2)
-		{}
+		{
+			/* COMMENT THESE LINES */
+
+			BLE_setPublicChar("2A37", "MODE: 2-", 8, "0A");
+			BLE_setPublicChar("2A37", "Reserved", 8, "0B");
+
+			/***********************/
+		}
 
 		//RESERVED
 		if(DEMO_MODE == 3)
-		{}
+		{
+			/* COMMENT THESE LINES */
+
+			BLE_setPublicChar("2A37", "MODE: 3-", 8, "0A");
+			BLE_setPublicChar("2A37", "Reserved", 8, "0B");
+
+			/***********************/
+		}
 
 		/* NOTE: IF YOU WISH TO IMPLEMENT MORE THAN 4 DEMO_MODES, YOU MUST UPDATE THE TIMER_A INTERRUPT VECTOR
 		 * (DEMO_MODE++) % 4		==>			(DEMO_MODE++) % NEW_NUMBER
