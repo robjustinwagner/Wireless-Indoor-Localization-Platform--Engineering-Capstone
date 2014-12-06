@@ -34,8 +34,6 @@ unsigned char data2;
 void BLE_Init()
 {
 	//BLE startup
-	//BLE_stopAdvertisement();
-	//BLE_turnOff();
 	BLE_turnOn();							//wait for cmd msg to transmit from ble
 
 	/*
@@ -44,22 +42,12 @@ void BLE_Init()
 	 * SR,20000000 --> Auto Advertise
 	 * R,1 --> Reboot
 	 */
-	/*
-	BLE_enableServices();
-	BLE_enableAutoAdvert();
-	BLE_Reboot();
-	long i;
-	for(i = 0; i < 1000; i++);*/
-
-
-	//BLE_Reboot();
-	//int i;
-//	for(i = 0; i < 10000; i++);
 
 	//BLE_toggleEcho();
 	BLE_startAdvertisement();
 	//BLE_changeNameTo("WILDevice");
 	//BLE_enableServices();
+	//BLE_enableAutoAdvert();
 	//BLE_Reboot();
 	//BLE_listServices();
 

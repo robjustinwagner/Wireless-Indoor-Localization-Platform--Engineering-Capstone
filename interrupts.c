@@ -11,6 +11,7 @@
 
 /* INCLUDES */
 #include "gen_lib.h"
+#include "main.h"
 #include "ble.h"
 
 /* DEFINITIONS */
@@ -24,8 +25,12 @@
 __interrupt void Timer_A (void)
 {
 	//FROM Auxiliary.c
-	P6OUT ^= BIT5;                            // Toggle P1.0
-	//sendData = true;	//ble transmit
+	P6OUT ^= BIT5;                          // Toggle P6.5 (LED)
+	if(P4OUT == BIT6) 						// if SW1 is toggled, increment DEMO_MODE
+	{
+		(DEMO_MODE++) % 3;
+	}
+
 }
 
 // Echo back RXed character, confirm TX buffer is ready first

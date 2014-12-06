@@ -13,6 +13,6 @@
 #define AUXILIARY_H_
 
 //auxiliary functions
-void Timer_Init();
+void Auxiliary_Init();
 
 #endif /* AUXILIARY_H_ */

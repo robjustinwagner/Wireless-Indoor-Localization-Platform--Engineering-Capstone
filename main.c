@@ -26,7 +26,6 @@
 
 /* VARIABLES */
 static unsigned int j; //for loop index
-static unsigned int aux_j; //inner/auxiliary for loop index
 static unsigned char* hexVal;
 
 const static bool DEBUG_MODE = false;
@@ -35,12 +34,12 @@ const static bool COLLECT_FM_DATA = false;
 const int ROWS = COLLECTION_DURATION*SAMPLES_PER_DURATION;
 int COLS;
 
-const static int DEMO_MODE = 1;
+int DEMO_MODE = 0;
 /* DEMO MODES:
- *			1 - Targeted Fall Detection & Emergency Response System	(TEDERS)
- *			2 - Indoor Mapping (IM)
+ *			0 - Targeted Fall Detection & Emergency Response System	(TEDERS)
+ *			1 - Indoor Mapping (IM)
+ *			2 - RESERVED
  *			3 - RESERVED
- *			4 - RESERVED
  */
 const static float x_threshold = 1.25;
 const static float y_threshold = 1.25;
@@ -65,8 +64,6 @@ int main(void)
 
 	if(DEBUG_MODE)
 	{
-		//BLE_turnOff();
-		//BLE_turnOn();
 		BLE_Init();		//ble
 
 		while(1)
@@ -96,12 +93,12 @@ int main(void)
 	BLE_Init();		/*********************** COMMENT THIS OUT WHEN WE SWITCH TO INIT ROUTIENE ****************************/
 	MPU_Init(0, 0);	//sensors
 	hexVal = (unsigned char*) malloc(20);
-	Timer_Init();
+	Auxiliary_Init();
 
 	while(1)
 	{
 		//Targeted Fall Detection & Emergency Response System	(TEDERS)
-		if(DEMO_MODE == 1)
+		if(DEMO_MODE == 0)
 		{
 
 			int numThresholdsHit = 0;
@@ -136,7 +133,7 @@ int main(void)
 		}
 
 		//Indoor Mapping (IM)
-		if(DEMO_MODE == 2)
+		if(DEMO_MODE == 1)
 		{
 
 			int numThresholdsHit = 0;
@@ -171,12 +168,16 @@ int main(void)
 		}
 
 		//RESERVED
-		if(DEMO_MODE == 3)
+		if(DEMO_MODE == 2)
 		{}
 
 		//RESERVED
-		if(DEMO_MODE == 4)
+		if(DEMO_MODE == 3)
 		{}
+
+		/* NOTE: IF YOU WISH TO IMPLEMENT MORE THAN 4 DEMO_MODES, YOU MUST UPDATE THE TIMER_A INTERRUPT VECTOR
+		 * (DEMO_MODE++) % 4		==>			(DEMO_MODE++) % NEW_NUMBER
+		 */
 
 	}
 
